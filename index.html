@@ -66,9 +66,10 @@ code, .mono{font-family:var(--font-mono);}
 .brand .tag{font-family:var(--font-mono);font-size:11px;color:var(--accent);border:1px solid var(--border-strong);border-radius:999px;padding:2px 9px;letter-spacing:.04em;}
 .brand h1{font-size:19px;}
 .brand .sub{color:var(--ink-mute);font-size:12.5px;font-family:var(--font-mono);}
-#tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:0;}
-#tabs::-webkit-scrollbar{display:none;}
-#tabs button{
+.tabs-group{display:none;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:0;}
+.tabs-group.active{display:flex;}
+.tabs-group::-webkit-scrollbar{display:none;}
+.tabs-group button{
   flex:0 0 auto;
   background:none;border:none;
   color:var(--ink-dim);
@@ -79,8 +80,50 @@ code, .mono{font-family:var(--font-mono);}
   border-bottom:2px solid transparent;
   white-space:nowrap;
 }
-#tabs button:hover{color:var(--ink);}
-#tabs button.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tabs-group button:hover{color:var(--ink);}
+.tabs-group button.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ---------- Byte/char-array animation engine (libft parts 1-2, GNL) ---------- */
+.bx-toggle{font-family:var(--font-mono);font-size:11.5px;color:var(--accent);cursor:pointer;margin-top:10px;user-select:none;}
+.bx-toggle:hover{text-decoration:underline;}
+.bx-wrap{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border-strong);}
+.bx-stage{margin-bottom:8px;}
+.bx-row{display:flex;align-items:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.bx-label{font-family:var(--font-mono);font-size:10px;color:var(--ink-mute);flex:0 0 auto;padding-bottom:8px;min-width:34px;}
+.bx-cells{display:flex;gap:3px;flex-wrap:wrap;}
+.bx-cell{position:relative;width:24px;height:24px;border-radius:5px;background:var(--surface-3);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11.5px;color:var(--ink-dim);transition:border-color .2s ease,color .2s ease,background .2s ease,opacity .2s ease;}
+.bx-cell.hi{border-color:var(--accent);color:var(--accent);background:var(--accent-ink);}
+.bx-cell.hi2{border-color:var(--pro);color:var(--pro);background:rgba(192,155,239,.12);}
+.bx-cell.ok{border-color:var(--success);color:var(--success);background:var(--success-ink);}
+.bx-cell.dim{opacity:.3;}
+.bx-cell .ptr{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--accent);font-family:var(--font-mono);white-space:nowrap;}
+.bx-code{font-family:var(--font-mono);font-size:11.5px;background:var(--surface-2);border-radius:7px;padding:7px 10px;margin-bottom:6px;color:var(--ink);}
+.bx-why{font-size:12.5px;color:var(--ink-dim);min-height:34px;}
+.bx-nav{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.bx-nav button{font-family:var(--font-mono);font-size:11px;background:var(--surface-2);border:1px solid var(--border-strong);color:var(--ink);border-radius:6px;padding:4px 10px;cursor:pointer;}
+.bx-nav button:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.bx-nav button:disabled{opacity:.35;cursor:default;}
+.bx-counter{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-mute);}
+
+/* ---------- Linked-list node-chain animation engine (libft part 3) ---------- */
+.lc-row{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-bottom:10px;min-height:36px;}
+.lc-box{min-width:34px;padding:0 9px;height:30px;border-radius:6px;background:var(--surface-3);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;color:var(--ink-dim);transition:all .2s ease;}
+.lc-box.hi{border-color:var(--accent);color:var(--accent);background:var(--accent-ink);}
+.lc-box.new{border-color:var(--success);color:var(--success);background:var(--success-ink);}
+.lc-box.freed{opacity:.3;text-decoration:line-through;}
+.lc-arrow{color:var(--ink-mute);font-family:var(--font-mono);font-size:15px;margin:0 4px;}
+.lc-null{font-family:var(--font-mono);font-size:11px;color:var(--ink-mute);margin-left:4px;}
+
+.project-block{display:none;}
+.project-block.active{display:block;}
+.project-picker{display:flex;align-items:center;gap:8px;margin-left:auto;padding-bottom:12px;}
+.project-picker label{font-family:var(--font-mono);font-size:11px;color:var(--ink-mute);}
+#project-select{
+  font-family:var(--font-mono);font-size:12.5px;
+  background:var(--surface-2);border:1px solid var(--border-strong);color:var(--accent);
+  border-radius:8px;padding:7px 12px;cursor:pointer;
+}
+#project-select:focus{outline:1px solid var(--accent);}
 
 /* ---------- Sections ---------- */
 section.page{display:none;padding-top:30px;animation:fadein .3s ease;}
@@ -300,11 +343,19 @@ input[type="range"]{accent-color:var(--accent);}
 <div id="topbar">
   <div id="topbar-inner">
     <div class="brand">
-      <h1>push_swap</h1>
+      <h1 id="brand-title">push_swap</h1>
       <span class="tag">42 School</span>
       <span class="sub">guia visual · gcelesti</span>
+      <div class="project-picker">
+        <label for="project-select">projeto</label>
+        <select id="project-select">
+          <option value="pushswap" selected>push_swap</option>
+          <option value="gnl">get_next_line</option>
+          <option value="libft">libft</option>
+        </select>
+      </div>
     </div>
-    <div id="tabs">
+    <div class="tabs-group active" id="tabsgroup-pushswap" data-project="proj-pushswap">
       <button data-target="overview" class="active">Visão geral</button>
       <button data-target="mainc">main.c</button>
       <button data-target="parser">parser.c</button>
@@ -315,16 +366,33 @@ input[type="range"]{accent-color:var(--accent);}
       <button data-target="manual">manual</button>
       <button data-target="simulator">simulador</button>
     </div>
+    <div class="tabs-group" id="tabsgroup-gnl" data-project="proj-gnl">
+      <button data-target="gnl-overview" class="active">Visão geral</button>
+      <button data-target="gnl-main">get_next_line.c</button>
+      <button data-target="gnl-utils">get_next_line_utils.c</button>
+      <button data-target="gnl-buffer">BUFFER_SIZE</button>
+      <button data-target="gnl-bonus">bonus</button>
+      <button data-target="gnl-manual">manual / README</button>
+    </div>
+    <div class="tabs-group" id="tabsgroup-libft" data-project="proj-libft">
+      <button data-target="lf-overview" class="active">Visão geral</button>
+      <button data-target="lf-part1">Parte 1 · libc</button>
+      <button data-target="lf-part2">Parte 2 · adicionais</button>
+      <button data-target="lf-part3">Parte 3 · linked list</button>
+      <button data-target="lf-manual">manual / README</button>
+    </div>
   </div>
 </div>
 
 <div class="wrap">
 
+<div class="project-block active" id="proj-pushswap">
+
 <!-- ============================================================ OVERVIEW -->
 <section class="page active" id="overview">
   <span class="eyebrow">Mapa do projeto</span>
   <h2 class="page-title">Duas pilhas, um objetivo</h2>
-  <p class="page-desc">push_swap ordena uma lista de números usando só duas pilhas (A e B) e um conjunto fixo de 11 operações. Este guia cobre <b style="color:var(--ink)">main.c, parser.c, operations.c, sorting.c, utils.c</b> e as metas de <b style="color:var(--ink)">benchmark</b> — tudo num arquivo só.</p>
+  <p class="page-desc">push_swap ordena uma lista de números usando só duas pilhas (A e B) e um conjunto fixo de 11 operações. Este guia cobre <b style="color:var(--ink)">main.c, parser.c, operations.c, sorting.c, utils.c</b> e as metas de <b style="color:var(--ink)">benchmark</b> — tudo num arquivo só, pronto pra compartilhar.</p>
 
   <div class="hero-stacks">
     <div class="hero-col">
@@ -1595,10 +1663,1587 @@ void	ft_putstr(char *str)
   </div>
 </section>
 
+</div><!-- /proj-pushswap -->
 
-</div>
+<!-- ================================================================================================= GNL PROJECT -->
+<div class="project-block" id="proj-gnl">
 
-<footer>push_swap — guia visual · 42 School SP · feito para compartilhar com a turma</footer>
+<!-- ============================================================ GNL OVERVIEW -->
+<section class="page active" id="gnl-overview">
+  <span class="eyebrow">Mapa do projeto</span>
+  <h2 class="page-title">Uma linha de cada vez, sem perder o resto</h2>
+  <p class="page-desc"><code>get_next_line</code> lê de um file descriptor e devolve, a cada chamada, <b style="color:var(--ink)">exatamente uma linha</b> — usando uma variável <b style="color:var(--ink)">static</b> pra lembrar, entre uma chamada e outra, o que já foi lido do arquivo mas ainda não foi devolvido.</p>
+
+  <div class="hero-stacks">
+    <div class="hero-col">
+      <span class="lbl">FD</span>
+      <div class="hero-block">read()</div>
+    </div>
+    <div class="hero-col">
+      <span class="lbl">BUFFER_SIZE bytes</span>
+      <div class="hero-block">buf</div>
+    </div>
+    <div class="hero-col">
+      <span class="lbl">static</span>
+      <div class="hero-block">stash</div>
+    </div>
+    <div class="hero-col">
+      <span class="lbl">retorno</span>
+      <div class="hero-block">"linha\n"</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">fluxo do programa</span><span class="part">ARQUITETURA</span></div>
+    <div class="sheet-body">
+      <div class="flow">
+        <div class="flow-box"><span class="code">get_next_line.c</span><span class="why">A função principal: orquestra o loop de leitura e devolve a linha.</span></div>
+        <div class="flow-connector"></div>
+        <div class="flow-box"><span class="code">read(fd, buffer, BUFFER_SIZE)</span><span class="why">Lê no máximo BUFFER_SIZE bytes por vez — nunca o arquivo inteiro de uma vez.</span></div>
+        <div class="flow-connector"></div>
+        <div class="flow-box"><span class="code">static char *stash</span><span class="why">Guarda, entre chamadas, o que sobrou depois do último '\n' devolvido.</span></div>
+        <div class="flow-connector"></div>
+        <div class="flow-box"><span class="code">get_next_line_utils.c</span><span class="why">join, extract_line, get_remaining, has_newline — os helpers que fazem o trabalho de string.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arch-badges">
+    <span class="arch-badge"><b>3</b> arquivos obrigatórios</span>
+    <span class="arch-badge"><b>1</b> variável estática (por fd, no bônus)</span>
+    <span class="arch-badge">BUFFER_SIZE: <b>configurável</b> via -D</span>
+    <span class="arch-badge">proibidos: <b>lseek, libft, global</b></span>
+  </div>
+
+  <div class="note-callout">O maior aprendizado aqui não é a função em si — é entender <b>por que</b> uma variável <code>static</code> resolve o problema de "lembrar estado" entre chamadas sem usar variável global (que é proibida).</div>
+</section>
+
+<!-- ============================================================ GNL MAIN.C -->
+<section class="page" id="gnl-main">
+  <span class="eyebrow">get_next_line.c</span>
+  <h2 class="page-title">A função principal</h2>
+  <p class="page-desc">Um loop que só para em três situações: achou uma linha completa, o arquivo acabou, ou deu erro. Tudo gira em torno da variável <code>static</code>.</p>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">char *<b style="color:var(--accent)">get_next_line</b>(int fd)</span><span class="part">FUNC. 01</span></div>
+    <div class="sheet-body">
+      <div class="flow">
+
+        <div class="flow-box"><span class="code">static char *stash = NULL;</span><span class="why">Persiste entre chamadas — é aqui que mora "o que já foi lido mas não devolvido ainda".</span></div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-decision-row">
+          <div class="flow-decision-box"><span class="code">fd &lt; 0 || BUFFER_SIZE &lt;= 0 ?</span><span class="why">Entrada inválida não deve nem tentar ler.</span></div>
+          <div class="flow-branch">
+            <div class="flow-branch-arrow"></div>
+            <div class="flow-branch-box"><b>SIM →</b> return (NULL);</div>
+          </div>
+        </div>
+        <div class="no-label">não ↓</div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-box"><span class="code">while (!has_newline(stash))</span><span class="why">Enquanto o que já temos guardado não tiver um '\n', continua lendo.</span></div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-box"><span class="code">bytes = read(fd, buffer, BUFFER_SIZE);</span><span class="why">Lê só um pedaço do arquivo por vez — nunca tudo de uma vez.</span></div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-decision-row">
+          <div class="flow-decision-box"><span class="code">bytes == -1 ?</span><span class="why">Erro de leitura (fd inválido, por exemplo).</span></div>
+          <div class="flow-branch">
+            <div class="flow-branch-arrow"></div>
+            <div class="flow-branch-box"><b>SIM →</b> free(stash); stash = NULL; return (NULL);</div>
+          </div>
+        </div>
+        <div class="no-label">não ↓</div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-decision-row">
+          <div class="flow-decision-box"><span class="code">bytes == 0 ?</span><span class="why">Fim do arquivo — não há mais nada pra ler com read().</span></div>
+          <div class="flow-branch">
+            <div class="flow-branch-arrow"></div>
+            <div class="flow-branch-box"><b>SIM →</b> sai do loop (o que sobrar em stash ainda pode virar a última linha).</div>
+          </div>
+        </div>
+        <div class="no-label">não ↓</div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-box"><span class="code">buffer[bytes] = '\0'; stash = join(stash, buffer);</span><span class="why">Cola o pedaço novo no que já tinha, usando 'bytes' como tamanho — nunca strlen(buffer), que pode ler lixo.</span></div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-decision-row">
+          <div class="flow-decision-box"><span class="code">stash == NULL || *stash == '\0' ?</span><span class="why">Saiu do loop sem nada em mãos: arquivo vazio ou já tinha acabado antes.</span></div>
+          <div class="flow-branch">
+            <div class="flow-branch-arrow"></div>
+            <div class="flow-branch-box"><b>SIM →</b> return (NULL);</div>
+          </div>
+        </div>
+        <div class="no-label">não ↓</div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-box"><span class="code">line = extract_line(stash); stash = get_remaining(stash);</span><span class="why">Corta no '\n' (ou no fim da string, se o arquivo não terminar com '\n'): uma parte vira a linha devolvida, o resto fica guardado pra próxima chamada.</span></div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-box"><span class="code">return (line);</span><span class="why">A próxima chamada a get_next_line() já começa de onde essa parou.</span></div>
+      </div>
+      <div class="why-box"><b>Por que ler pouco de cada vez:</b> o enunciado é explícito — não leia o arquivo inteiro pra depois processar linha por linha. BUFFER_SIZE controla exatamente quanto se lê por chamada de read(), e isso precisa funcionar igual bem com BUFFER_SIZE=1 ou BUFFER_SIZE=10000000.</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">simulação passo a passo</span><span class="part">BUFFER_SIZE = 4</span></div>
+    <div class="sheet-body">
+      <p style="font-size:13px;color:var(--ink-dim);margin:0 0 4px;">Arquivo de exemplo: <code>"Hello\nWorld\n!"</code> — acompanhe o buffer e o stash se enchendo a cada <code>read()</code>, até cada chamada de <code>get_next_line()</code> devolver sua linha.</p>
+      <details class="bx-details">
+        <summary class="bx-toggle">▶ ver simulação</summary>
+        <div class="bx-wrap" id="anim-gnl-main"></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ GNL UTILS -->
+<section class="page" id="gnl-utils">
+  <span class="eyebrow">get_next_line_utils.c</span>
+  <h2 class="page-title">Os helpers que fazem o trabalho de string</h2>
+  <p class="page-desc">O enunciado pede pra colocar toda função auxiliar aqui. Como <b style="color:var(--ink)">a libft não é permitida nesse projeto</b>, até strlen/strdup precisam ser reescritos localmente se forem usados.</p>
+
+  <div class="util-grid">
+    <div class="util-card">
+      <h4>join_stash(char *stash, char *buf)</h4>
+      <p>Concatena o que sobrou da leitura anterior com o pedaço novo lido do fd. Libera o stash antigo depois de montar o novo.</p>
+      <div class="util-example">stash="ab" + buf="c\nd" → <b>"abc\nd"</b></div>
+    </div>
+    <div class="util-card">
+      <h4>has_newline(char *s)</h4>
+      <p>Procura um '\n' na string acumulada. É a condição que decide se o loop de leitura pode parar.</p>
+      <div class="util-example">has_newline("abc\nd") → <b>true</b></div>
+    </div>
+    <div class="util-card">
+      <h4>extract_line(char *stash)</h4>
+      <p>Copia tudo até e incluindo o '\n' (ou até o fim da string, se não houver '\n' — caso do fim do arquivo).</p>
+      <div class="util-example">extract_line("abc\nd") → <b>"abc\n"</b></div>
+    </div>
+    <div class="util-card">
+      <h4>get_remaining(char *stash)</h4>
+      <p>Copia tudo depois do '\n' devolvido, pra virar o novo static na próxima chamada. Se não sobrar nada, retorna NULL.</p>
+      <div class="util-example">get_remaining("abc\nd") → <b>"d"</b></div>
+    </div>
+    <div class="util-card">
+      <h4>gnl_strlen(char *s)</h4>
+      <p>Versão local de strlen — precisa existir porque o projeto não permite usar a libft aqui.</p>
+      <div class="util-example">gnl_strlen("abc") → <b>3</b></div>
+    </div>
+    <div class="util-card">
+      <h4>gnl_strchr(char *s, char c)</h4>
+      <p>Encontra a primeira ocorrência de um caractere — a base de has_newline, procurando especificamente por '\n'.</p>
+      <div class="util-example">gnl_strchr("abc\nd", '\n') → <b>ponteiro pro '\n'</b></div>
+    </div>
+  </div>
+
+  <div class="note-callout">Nomes de funções auxiliares são livres — o enunciado só exige os <b>3 arquivos</b> (get_next_line.c, get_next_line_utils.c, get_next_line.h) e que toda função auxiliar fique no arquivo utils.</div>
+</section>
+
+<!-- ============================================================ GNL BUFFER_SIZE -->
+<section class="page" id="gnl-buffer">
+  <span class="eyebrow">compilação</span>
+  <h2 class="page-title">BUFFER_SIZE: o mesmo código, tamanhos diferentes</h2>
+  <p class="page-desc">A avaliação (peer e Moulinette) recompila com valores de BUFFER_SIZE diferentes. Se o algoritmo depender de um tamanho específico, ele quebra.</p>
+
+  <div class="codeblock">cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line.c get_next_line_utils.c</div>
+
+  <div class="util-grid">
+    <div class="util-card">
+      <h4>BUFFER_SIZE = 1</h4>
+      <p>read() traz 1 byte por vez. O loop de leitura roda muitas vezes pra montar uma única linha — lento, mas <b>tem que funcionar</b>: é o teste mais comum pra pegar bugs de concatenação.</p>
+    </div>
+    <div class="util-card">
+      <h4>BUFFER_SIZE = 42 (exemplo do enunciado)</h4>
+      <p>Tamanho "normal", usado no exemplo de compilação do subject. Bom valor padrão pra desenvolver e debugar visualmente.</p>
+    </div>
+    <div class="util-card">
+      <h4>BUFFER_SIZE = 9999</h4>
+      <p>Maior que muitas linhas de um arquivo de teste típico — uma única leitura pode trazer <b>várias linhas de uma vez</b>. O stash precisa guardar o excesso corretamente pra próxima chamada.</p>
+    </div>
+    <div class="util-card">
+      <h4>BUFFER_SIZE = 10000000</h4>
+      <p>Testa se o malloc/read do buffer aguenta um tamanho gigante sem estourar memória ou travar — mesmo que o arquivo lido seja pequeno.</p>
+    </div>
+    <div class="util-card">
+      <h4>sem -D BUFFER_SIZE</h4>
+      <p>O projeto <b>precisa compilar</b> mesmo sem a flag — por isso o enunciado permite (e espera) um valor default definido no próprio código com #ifndef.</p>
+      <div class="util-example">#ifndef BUFFER_SIZE<br># define BUFFER_SIZE 42<br>#endif</div>
+    </div>
+  </div>
+
+  <div class="pitfall"><b>Armadilha clássica:</b> usar <code>strlen(buffer)</code> depois do read() em vez do valor retornado por read(). Se o buffer tinha lixo de uma leitura anterior (comum com BUFFER_SIZE pequeno), strlen conta caracteres que não fazem parte da leitura atual.</div>
+  <div class="pitfall" style="margin-top:12px;"><b>lseek() é proibido:</b> qualquer solução que "espie" ou "volte" no arquivo usando lseek não é válida — toda a lógica de posição tem que vir só do que já foi lido e guardado em stash.</div>
+</section>
+
+<!-- ============================================================ GNL BONUS -->
+<section class="page" id="gnl-bonus">
+  <span class="eyebrow">bônus</span>
+  <h2 class="page-title">Múltiplos file descriptors, uma variável estática</h2>
+  <p class="page-desc">A parte mais interessante do bônus não é ler vários fds — é fazer isso <b style="color:var(--ink)">sem perder o estado de nenhum</b>, usando só uma variável static no total.</p>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">a ideia central</span><span class="part">DESIGN</span></div>
+    <div class="sheet-body prose">
+      <p>Um <code>static char *stash</code> sozinho só lembra de <b>um</b> fd por vez — se você chamar get_next_line em fd 3 e depois em fd 4, a leitura de 4 sobrescreveria o que estava guardado pra 3.</p>
+      <p>A solução mais comum: trocar o static por um <b>array de ponteiros</b>, indexado pelo próprio fd. Isso ainda conta como <b>uma única variável estática</b> (é uma declaração só), mas guarda o estado de cada fd numa posição separada.</p>
+      <div class="codeblock">static char *stash[OPEN_MAX];
+...
+stash[fd] = join_stash(stash[fd], buffer);</div>
+      <div class="why-box"><b>Por que isso satisfaz a regra:</b> o enunciado pede "apenas uma variável estática" — não "apenas um valor". Um array é uma variável só, mesmo guardando N estados diferentes.</div>
+      <div class="pitfall"><b>Cuidado:</b> um array de tamanho fixo limita quantos fds diferentes podem ser acompanhados ao mesmo tempo. Uma alternativa mais robusta (fora do escopo mínimo) é uma lista encadeada de (fd, stash), crescendo sob demanda.</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">teste esperado</span><span class="part">COMPORTAMENTO</span></div>
+    <div class="sheet-body">
+      <div class="flow">
+        <div class="flow-box"><span class="code">get_next_line(3) → get_next_line(4) → get_next_line(5) → get_next_line(3)</span><span class="why">Cada chamada deve continuar exatamente de onde a última leitura <b>daquele</b> fd parou — sem misturar linhas entre arquivos diferentes.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ GNL MANUAL/README -->
+<section class="page" id="gnl-manual">
+  <span class="eyebrow">documentação</span>
+  <h2 class="page-title">Regras do projeto, README.md e código real</h2>
+  <p class="page-desc">Resumo prático das instruções comuns da 42, o que o README.md precisa conter, e a implementação completa comentada linha a linha.</p>
+
+  <div class="manual-subtabs" style="display:flex;gap:6px;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:14px;">
+    <button class="manual-subtab active" data-sub="gnl-manual-conceitos">Regras &amp; README</button>
+    <button class="manual-subtab" data-sub="gnl-manual-codigo">Implementação linha a linha</button>
+  </div>
+
+  <div id="gnl-manual-conceitos" class="manual-pane active">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">regras comuns (todos os projetos 42)</span><span class="part">NORMA</span></div>
+    <div class="sheet-body prose">
+      <ul>
+        <li>Norma obrigatória — inclusive nos arquivos de bônus. Erro de norma zera o projeto inteiro.</li>
+        <li>Nenhum crash é tolerado (segfault, bus error, double free) fora de comportamento indefinido explícito do enunciado.</li>
+        <li>Toda memória alocada precisa ser liberada — sem memory leaks.</li>
+        <li>Compilação com <code>-Wall -Wextra -Werror</code>, usando <code>cc</code>.</li>
+        <li>Bônus só é avaliado se a parte obrigatória estiver 100% correta.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">proibido nesse projeto</span><span class="part">RESTRIÇÕES</span></div>
+    <div class="sheet-body">
+      <div class="pitfall"><b>libft:</b> não pode ser usada aqui, mesmo estando disponível de outro projeto.</div>
+      <div class="pitfall" style="margin-top:10px;"><b>lseek():</b> proibida em qualquer parte da implementação.</div>
+      <div class="pitfall" style="margin-top:10px;"><b>Variáveis globais:</b> proibidas — daí a necessidade da variável static.</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">README.md obrigatório</span><span class="part">ENTREGA</span></div>
+    <div class="sheet-body prose">
+      <p>Precisa estar na raiz do repositório e incluir, no mínimo:</p>
+      <ul>
+        <li>Primeira linha em itálico: <i>This project has been created as part of the 42 curriculum by &lt;login1&gt;[, &lt;login2&gt;...]</i></li>
+        <li>Seção <b>Description</b> — objetivo e visão geral do projeto.</li>
+        <li>Seção <b>Instructions</b> — como compilar e usar a função.</li>
+        <li>Seção <b>Resources</b> — referências usadas e <b>como a IA foi usada</b>, especificando em quais tarefas e partes.</li>
+        <li>Explicação e justificativa detalhada do algoritmo escolhido (o loop de leitura com static, nesse caso).</li>
+      </ul>
+    </div>
+  </div>
+  </div><!-- /gnl-manual-conceitos -->
+
+  <div id="gnl-manual-codigo" class="manual-pane">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">Implementação linha a linha (versão mandatória, 1 fd)</span><span class="part">CÓDIGO REAL</span></div>
+    <div class="sheet-body">
+      <p class="sheet-note">Código completo e funcional — a versão mais simples que passa a parte obrigatória (um único <code>static</code>, um fd por vez).</p>
+      <div class="file-toc">
+        <button class="ll-tab active" data-file="gnl-ll-h">get_next_line.h</button>
+        <button class="ll-tab" data-file="gnl-ll-utils">get_next_line_utils.c</button>
+        <button class="ll-tab" data-file="gnl-ll-main">get_next_line.c</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gnl-ll-h" class="ll-file active">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">get_next_line.h — protótipos</span><span class="part">HEADER</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
+
+# include &lt;stdlib.h&gt;
+# include &lt;unistd.h&gt;
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
+char	*get_next_line(int fd);
+int		gnl_strlen(char *s);
+int		has_newline(char *s);
+char	*gnl_strjoin(char *s1, char *buf, int n);
+char	*extract_line(char *stash);
+char	*get_remaining(char *stash);
+
+#endif</div>
+      <div class="why-box"><b>#ifndef BUFFER_SIZE / #define BUFFER_SIZE 42:</b> garante que o projeto compila mesmo sem <code>-D BUFFER_SIZE=n</code> — se a flag não for passada, usa 42 como padrão.</div>
+    </div>
+  </div>
+  </div><!-- /gnl-ll-h -->
+
+  <div id="gnl-ll-utils" class="ll-file">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">has_newline &amp; gnl_strlen — os dois pequenos</span><span class="part">HELPERS</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">int	gnl_strlen(char *s)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i])
+		i++;
+	return (i);
+}
+
+int	has_newline(char *s)
+{
+	int	i;
+
+	if (!s)
+		return (0);
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '\n')
+			return (1);
+		i++;
+	}
+	return (0);
+}</div>
+      <div class="why-box"><b>Por que checar <code>!s</code> logo de cara:</b> na primeira chamada, o <code>static</code> ainda é NULL — sem essa checagem, qualquer <code>s[i]</code> seria um acesso inválido.</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">gnl_strjoin — cola o buffer novo no stash</span><span class="part">HELPER</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">char	*gnl_strjoin(char *s1, char *buf, int n)
+{
+	char	*res;
+	int		len1;
+	int		i;
+
+	len1 = gnl_strlen(s1);
+	res = malloc(len1 + n + 1);
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (i < len1)
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	i = 0;
+	while (i < n)
+	{
+		res[len1 + i] = buf[i];
+		i++;
+	}
+	res[len1 + n] = '\0';
+	free(s1);
+	return (res);
+}</div>
+      <ol class="linebyline">
+        <li><code>len1 = gnl_strlen(s1);</code> — se s1 for NULL, gnl_strlen já devolve 0 (primeira chamada de get_next_line).</li>
+        <li><code>res = malloc(len1 + n + 1);</code> — espaço pro conteúdo antigo + o pedaço novo (n bytes lidos) + o '\0' final.</li>
+        <li>Primeiro <code>while</code> — copia o que já tinha em s1 pro início de res.</li>
+        <li>Segundo <code>while</code> — copia os n bytes recém-lidos do buffer, logo em seguida.</li>
+        <li><code>res[len1 + n] = '\0';</code> — fecha a string; sem isso, qualquer função de string subsequente leria lixo.</li>
+        <li><code>free(s1);</code> — libera a versão antiga do stash. Fundamental pra não vazar memória a cada chamada.</li>
+      </ol>
+      <div class="pitfall"><b>Cuidado:</b> se <code>malloc</code> falhar aqui, s1 nunca é liberado — num projeto real vale tratar esse caso também, mas o enunciado tolera comportamento indefinido só em caso de erro real de sistema.</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">extract_line &amp; get_remaining — separa a linha do resto</span><span class="part">HELPERS</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">char	*extract_line(char *stash)
+{
+	int		i;
+	char	*line;
+
+	i = 0;
+	while (stash[i] && stash[i] != '\n')
+		i++;
+	if (stash[i] == '\n')
+		i++;
+	line = malloc(i + 1);
+	if (!line)
+		return (NULL);
+	i = 0;
+	while (stash[i] && stash[i] != '\n')
+	{
+		line[i] = stash[i];
+		i++;
+	}
+	if (stash[i] == '\n')
+		line[i++] = '\n';
+	line[i] = '\0';
+	return (line);
+}
+
+char	*get_remaining(char *stash)
+{
+	int		i;
+	int		j;
+	char	*rest;
+
+	i = 0;
+	while (stash[i] && stash[i] != '\n')
+		i++;
+	if (stash[i] == '\n')
+		i++;
+	if (!stash[i])
+		return (free(stash), NULL);
+	rest = malloc(gnl_strlen(stash) - i + 1);
+	if (!rest)
+		return (free(stash), NULL);
+	j = 0;
+	while (stash[i])
+		rest[j++] = stash[i++];
+	rest[j] = '\0';
+	free(stash);
+	return (rest);
+}</div>
+      <ol class="linebyline">
+        <li><code>while (stash[i] && stash[i] != '\n') i++;</code> — em ambas as funções, o primeiro passo é achar o '\n' (ou o fim da string).</li>
+        <li><code>if (stash[i] == '\n') i++;</code> — inclui o '\n' na contagem, porque a linha devolvida precisa terminar com ele (quando existir).</li>
+        <li>Em <code>extract_line</code>: aloca exatamente <code>i</code> bytes (o tamanho já calculado) e copia até ali — essa é a linha que <code>get_next_line</code> vai retornar.</li>
+        <li>Em <code>get_remaining</code>: se depois do '\n' não sobra nada (<code>!stash[i]</code>), libera o stash inteiro e retorna NULL — não há mais nada guardado pra próxima chamada.</li>
+        <li>Caso contrário, aloca só o restante (<code>gnl_strlen(stash) - i</code> bytes) e copia — vira o novo <code>static</code> na próxima chamada.</li>
+        <li><code>free(stash);</code> no fim de <code>get_remaining</code> — o stash antigo (já dividido em linha + resto) não é mais necessário.</li>
+      </ol>
+      <div class="why-box"><b>Por que duas funções e não uma:</b> extract_line não mexe em memória (só lê stash), get_remaining é quem decide o destino do stash (incluindo liberá-lo) — separar deixa claro quem é dono de qual alocação.</div>
+    </div>
+  </div>
+  </div><!-- /gnl-ll-utils -->
+
+  <div id="gnl-ll-main" class="ll-file">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">get_next_line — a função inteira</span><span class="part">get_next_line.c</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">char	*get_next_line(int fd)
+{
+	static char	*stash;
+	char		buffer[BUFFER_SIZE + 1];
+	int			bytes;
+	char		*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	bytes = 1;
+	while (!has_newline(stash) && bytes > 0)
+	{
+		bytes = read(fd, buffer, BUFFER_SIZE);
+		if (bytes == -1)
+		{
+			free(stash);
+			stash = NULL;
+			return (NULL);
+		}
+		buffer[bytes] = '\0';
+		if (bytes > 0)
+			stash = gnl_strjoin(stash, buffer, bytes);
+	}
+	if (!stash || !stash[0])
+		return (NULL);
+	line = extract_line(stash);
+	stash = get_remaining(stash);
+	return (line);
+}</div>
+      <ol class="linebyline">
+        <li><code>static char *stash;</code> — inicializada como NULL automaticamente (regra da linguagem C pra static). É o único estado que sobrevive entre chamadas.</li>
+        <li><code>char buffer[BUFFER_SIZE + 1];</code> — +1 de propósito, pra sempre sobrar espaço pro '\0' depois do read().</li>
+        <li><code>if (fd &lt; 0 || BUFFER_SIZE &lt;= 0) return (NULL);</code> — validação de entrada, antes de tentar ler qualquer coisa.</li>
+        <li><code>bytes = 1;</code> — só pra entrar no while pela primeira vez (qualquer valor &gt; 0 serve).</li>
+        <li><code>while (!has_newline(stash) &amp;&amp; bytes &gt; 0)</code> — continua lendo enquanto não achou '\n' E o arquivo ainda não acabou.</li>
+        <li><code>bytes = read(fd, buffer, BUFFER_SIZE);</code> — lê no máximo BUFFER_SIZE bytes reais do fd.</li>
+        <li><code>if (bytes == -1) { free(stash); stash = NULL; return (NULL); }</code> — erro de leitura: limpa tudo e desiste, sem deixar lixo pra próxima chamada.</li>
+        <li><code>buffer[bytes] = '\0';</code> — fecha a string usando exatamente o que foi lido (nunca <code>strlen(buffer)</code>, que leria lixo de uma leitura anterior).</li>
+        <li><code>if (bytes &gt; 0) stash = gnl_strjoin(stash, buffer, bytes);</code> — só concatena se realmente leu algo (bytes==0 significa EOF, nada a colar).</li>
+        <li><code>if (!stash || !stash[0]) return (NULL);</code> — saiu do loop sem ter absolutamente nada: arquivo vazio ou já tinha terminado antes desta chamada.</li>
+        <li><code>line = extract_line(stash);</code> — separa a linha completa (até e incluindo o '\n', ou até o fim se não houver).</li>
+        <li><code>stash = get_remaining(stash);</code> — o que sobrar vira o novo estado — e a função antiga já libera a versão velha internamente.</li>
+        <li><code>return (line);</code> — devolve a linha pronta pro chamador.</li>
+      </ol>
+      <div class="pitfall"><b>Por que <code>bytes &gt; 0</code> no while e não só <code>bytes != -1</code>:</b> quando read() retorna 0 (EOF), não faz sentido continuar chamando read() de novo — ele sempre vai devolver 0. O loop precisa parar nesse caso, mesmo sem ter achado '\n'.</div>
+    </div>
+  </div>
+  </div><!-- /gnl-ll-main -->
+  </div><!-- /gnl-manual-codigo -->
+</section>
+
+</div><!-- /proj-gnl -->
+
+<!-- ================================================================================================= LIBFT PROJECT -->
+<div class="project-block" id="proj-libft">
+
+<!-- ============================================================ LIBFT OVERVIEW -->
+<section class="page active" id="lf-overview">
+  <span class="eyebrow">Mapa da biblioteca</span>
+  <h2 class="page-title">libft.a — sua caixa de ferramentas em C</h2>
+  <p class="page-desc">Uma biblioteca estática com reimplementações de funções da libc, funções adicionais de manipulação de strings/arrays, e uma implementação de lista encadeada. É a base usada em praticamente todo projeto seguinte do curso.</p>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">fluxo de construção</span><span class="part">ARQUITETURA</span></div>
+    <div class="sheet-body">
+      <div class="flow">
+        <div class="flow-box"><span class="code">ft_*.c</span><span class="why">Um arquivo por função (ou grupo pequeno de funções relacionadas), sempre na raiz do repositório.</span></div>
+        <div class="flow-connector"></div>
+        <div class="flow-box"><span class="code">libft.h</span><span class="why">Todos os protótipos + a struct t_list, usada pela parte 3.</span></div>
+        <div class="flow-connector"></div>
+        <div class="flow-box"><span class="code">Makefile</span><span class="why">Compila cada .c com -Wall -Wextra -Werror e empacota tudo com ar (nunca libtool).</span></div>
+        <div class="flow-connector"></div>
+        <div class="flow-box"><span class="code">libft.a</span><span class="why">A biblioteca final, na raiz do repo — pronta pra ser linkada em outros projetos (-lft -L.).</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arch-badges">
+    <span class="arch-badge"><b>23</b> funções · parte 1 (libc)</span>
+    <span class="arch-badge"><b>11</b> funções · parte 2 (adicionais)</span>
+    <span class="arch-badge"><b>9</b> funções · parte 3 (linked list)</span>
+    <span class="arch-badge">proibido: <b>variáveis globais</b></span>
+    <span class="arch-badge">empacotamento: <b>ar</b> (não libtool)</span>
+  </div>
+
+  <div class="note-callout">Helpers internos de uma função complexa devem ser declarados <code>static</code>, restritos ao próprio arquivo — é a mesma lógica de "esconder estado" que aparece em get_next_line.</div>
+</section>
+
+<!-- ============================================================ LIBFT PART 1 -->
+<section class="page" id="lf-part1">
+  <span class="eyebrow">Parte 1</span>
+  <h2 class="page-title">Reimplementações da libc</h2>
+  <p class="page-desc">Mesmo prototype, mesmo comportamento do man page — só o nome muda, com prefixo <code>ft_</code>. Não podem depender de nenhuma função externa.</p>
+
+  <div class="util-grid">
+    <div class="util-card"><h4>ft_isalpha(int c)</h4><p>1 se for letra (a-z, A-Z), senão 0.</p><div class="util-example">ft_isalpha('a') → <b>1</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_isalpha"></div></details></div>
+    <div class="util-card"><h4>ft_isdigit(int c)</h4><p>1 se for dígito (0-9), senão 0.</p><div class="util-example">ft_isdigit('9') → <b>1</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_isdigit"></div></details></div>
+    <div class="util-card"><h4>ft_isalnum(int c)</h4><p>1 se for letra ou dígito, senão 0.</p><div class="util-example">ft_isalnum('_') → <b>0</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_isalnum"></div></details></div>
+    <div class="util-card"><h4>ft_isascii(int c)</h4><p>1 se estiver na faixa ASCII (0–127), senão 0.</p><div class="util-example">ft_isascii(127) → <b>1</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_isascii"></div></details></div>
+    <div class="util-card"><h4>ft_isprint(int c)</h4><p>1 se for caractere imprimível (inclui espaço), senão 0.</p><div class="util-example">ft_isprint('\n') → <b>0</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_isprint"></div></details></div>
+    <div class="util-card"><h4>ft_strlen(const char *s)</h4><p>Tamanho da string, sem contar o '\0'.</p><div class="util-example">ft_strlen("abc") → <b>3</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strlen"></div></details></div>
+    <div class="util-card"><h4>ft_memset(void *b, int c, size_t len)</h4><p>Preenche 'len' bytes de memória com o byte 'c'.</p><div class="util-example">memset(buf, 0, 4) → <b>zera 4 bytes</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_memset"></div></details></div>
+    <div class="util-card"><h4>ft_bzero(void *s, size_t n)</h4><p>Preenche 'n' bytes com zero — equivalente a memset(s, 0, n).</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_bzero"></div></details></div>
+    <div class="util-card"><h4>ft_memcpy(void *dst, const void *src, size_t n)</h4><p>Copia 'n' bytes de src pra dst. Comportamento indefinido se as regiões se sobrepõem.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_memcpy"></div></details></div>
+    <div class="util-card"><h4>ft_memmove(void *dst, const void *src, size_t len)</h4><p>Como memcpy, mas seguro mesmo se as regiões se sobrepõem.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_memmove"></div></details></div>
+    <div class="util-card"><h4>ft_strlcpy(char *dst, const char *src, size_t size)</h4><p>Copia src pra dst, sem estourar 'size'. Retorna o tamanho de src (pra detectar truncamento).</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strlcpy"></div></details></div>
+    <div class="util-card"><h4>ft_strlcat(char *dst, const char *src, size_t size)</h4><p>Concatena src no fim de dst, respeitando o limite total 'size'.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strlcat"></div></details></div>
+    <div class="util-card"><h4>ft_toupper(int c)</h4><p>Converte letra minúscula pra maiúscula; outros caracteres passam intactos.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_toupper"></div></details></div>
+    <div class="util-card"><h4>ft_tolower(int c)</h4><p>Converte letra maiúscula pra minúscula; outros caracteres passam intactos.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_tolower"></div></details></div>
+    <div class="util-card"><h4>ft_strchr(const char *s, int c)</h4><p>Primeira ocorrência de 'c' em s (incluindo o '\0' final, se c for 0).</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strchr"></div></details></div>
+    <div class="util-card"><h4>ft_strrchr(const char *s, int c)</h4><p>Última ocorrência de 'c' em s.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strrchr"></div></details></div>
+    <div class="util-card"><h4>ft_strncmp(const char *s1, const char *s2, size_t n)</h4><p>Compara até 'n' caracteres entre as duas strings.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strncmp"></div></details></div>
+    <div class="util-card"><h4>ft_memchr(const void *s, int c, size_t n)</h4><p>Primeira ocorrência do byte 'c' nos primeiros 'n' bytes de s.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_memchr"></div></details></div>
+    <div class="util-card"><h4>ft_memcmp(const void *s1, const void *s2, size_t n)</h4><p>Compara byte a byte os primeiros 'n' bytes de duas regiões de memória.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_memcmp"></div></details></div>
+    <div class="util-card"><h4>ft_strnstr(const char *big, const char *little, size_t len)</h4><p>Procura a primeira ocorrência de 'little' dentro de 'big', limitado a 'len' bytes.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strnstr"></div></details></div>
+    <div class="util-card"><h4>ft_atoi(const char *str)</h4><p>Converte string pra inteiro, ignorando espaços iniciais e tratando sinal.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_atoi"></div></details></div>
+    <div class="util-card"><h4>ft_calloc(size_t nmemb, size_t size)</h4><p>malloc + zera a memória. Se nmemb ou size for 0, ainda retorna ponteiro válido pro free().</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_calloc"></div></details></div>
+    <div class="util-card"><h4>ft_strdup(const char *s1)</h4><p>Aloca e retorna uma cópia da string s1.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strdup"></div></details></div>
+  </div>
+
+  <div class="note-callout">Funções como <code>strlcpy</code>, <code>strlcat</code> e <code>bzero</code> não vêm por padrão na glibc de Linux — pra testar contra a versão do sistema, é preciso incluir <code>&lt;bsd/string.h&gt;</code> e linkar com <code>-lbsd</code>.</div>
+</section>
+
+<!-- ============================================================ LIBFT PART 2 -->
+<section class="page" id="lf-part2">
+  <span class="eyebrow">Parte 2</span>
+  <h2 class="page-title">Funções adicionais</h2>
+  <p class="page-desc">Funções que não existem na libc (ou existem de outra forma) — a maioria aloca memória com malloc() e devolve NULL se a alocação falhar.</p>
+
+  <div class="util-grid">
+    <div class="util-card"><h4>ft_substr(char const *s, unsigned int start, size_t len)</h4><p>Substring de 's', começando em 'start', com no máximo 'len' caracteres.</p><div class="util-example">ft_substr("hello", 1, 3) → <b>"ell"</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_substr"></div></details></div>
+    <div class="util-card"><h4>ft_strjoin(char const *s1, char const *s2)</h4><p>Nova string, concatenando s1 e s2.</p><div class="util-example">ft_strjoin("foo","bar") → <b>"foobar"</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strjoin"></div></details></div>
+    <div class="util-card"><h4>ft_strtrim(char const *s1, char const *set)</h4><p>Copia de s1 sem os caracteres de 'set' no início e no fim.</p><div class="util-example">ft_strtrim("  hi  ", " ") → <b>"hi"</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strtrim"></div></details></div>
+    <div class="util-card"><h4>ft_split(char const *s, char c)</h4><p>Array de strings, dividindo 's' pelo delimitador 'c'. Array terminado em NULL.</p><div class="util-example">ft_split("a,b,c", ',') → <b>["a","b","c",NULL]</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_split"></div></details></div>
+    <div class="util-card"><h4>ft_itoa(int n)</h4><p>Converte um inteiro (inclusive negativos) pra string.</p><div class="util-example">ft_itoa(-42) → <b>"-42"</b></div><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_itoa"></div></details></div>
+    <div class="util-card"><h4>ft_strmapi(char const *s, char (*f)(unsigned int, char))</h4><p>Aplica 'f' a cada caractere (com seu índice) e monta uma string nova.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_strmapi"></div></details></div>
+    <div class="util-card"><h4>ft_striteri(char *s, void (*f)(unsigned int, char*))</h4><p>Aplica 'f' a cada caractere de 's' <b>no lugar</b> — passa o caractere por endereço, pode modificar.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_striteri"></div></details></div>
+    <div class="util-card"><h4>ft_putchar_fd(char c, int fd)</h4><p>Escreve um caractere no file descriptor indicado.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_putchar_fd"></div></details></div>
+    <div class="util-card"><h4>ft_putstr_fd(char *s, int fd)</h4><p>Escreve uma string no file descriptor indicado.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_putstr_fd"></div></details></div>
+    <div class="util-card"><h4>ft_putendl_fd(char *s, int fd)</h4><p>Escreve a string seguida de '\n'.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_putendl_fd"></div></details></div>
+    <div class="util-card"><h4>ft_putnbr_fd(int n, int fd)</h4><p>Escreve um inteiro (inclusive negativos, inclusive INT_MIN) no fd.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_putnbr_fd"></div></details></div>
+  </div>
+</section>
+
+<!-- ============================================================ LIBFT PART 3 -->
+<section class="page" id="lf-part3">
+  <span class="eyebrow">Parte 3</span>
+  <h2 class="page-title">Lista encadeada (t_list)</h2>
+  <p class="page-desc">O struct que sustenta essa parte inteira — vale entender bem antes de implementar qualquer função abaixo.</p>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">struct s_list</span><span class="part">libft.h</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">typedef struct s_list
+{
+    void            *content;
+    struct s_list   *next;
+}   t_list;</div>
+      <div class="why-box"><b>content</b> é void* de propósito — a lista guarda qualquer tipo de dado. <b>next</b> aponta pro próximo nó, ou NULL se for o último.</div>
+    </div>
+  </div>
+
+  <div class="util-grid">
+    <div class="util-card"><h4>ft_lstnew(void *content)</h4><p>Aloca um nó novo com 'content' e next = NULL.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstnew"></div></details></div>
+    <div class="util-card"><h4>ft_lstadd_front(t_list **lst, t_list *new)</h4><p>Insere 'new' no início da lista.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstadd_front"></div></details></div>
+    <div class="util-card"><h4>ft_lstsize(t_list *lst)</h4><p>Conta quantos nós existem na lista.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstsize"></div></details></div>
+    <div class="util-card"><h4>ft_lstlast(t_list *lst)</h4><p>Retorna o último nó da lista.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstlast"></div></details></div>
+    <div class="util-card"><h4>ft_lstadd_back(t_list **lst, t_list *new)</h4><p>Insere 'new' no final da lista (usa lstlast internamente).</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstadd_back"></div></details></div>
+    <div class="util-card"><h4>ft_lstdelone(t_list *lst, void (*del)(void*))</h4><p>Libera o conteúdo de UM nó (via 'del') e o próprio nó — não mexe no resto da lista.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstdelone"></div></details></div>
+    <div class="util-card"><h4>ft_lstclear(t_list **lst, void (*del)(void*))</h4><p>Libera a lista inteira, nó por nó (usa lstdelone), e zera o ponteiro original.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstclear"></div></details></div>
+    <div class="util-card"><h4>ft_lstiter(t_list *lst, void (*f)(void*))</h4><p>Aplica 'f' ao conteúdo de cada nó, sem criar uma lista nova.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstiter"></div></details></div>
+    <div class="util-card"><h4>ft_lstmap(t_list *lst, void *(*f)(void*), void (*del)(void*))</h4><p>Cria uma lista <b>nova</b>, aplicando 'f' ao conteúdo de cada nó original. Se uma alocação falhar no meio, libera tudo que já tinha criado (usando 'del') e retorna NULL.</p><details class="bx-details"><summary class="bx-toggle">▶ animar</summary><div class="bx-wrap" id="anim-ft_lstmap"></div></details></div>
+  </div>
+
+  <div class="pitfall"><b>Armadilha comum em ft_lstdelone:</b> a função só libera UM nó — chamar ela dentro de um loop que também faz <code>lst = lst->next</code> depois de já ter dado free no nó é use-after-free, igual ao erro clássico de free_stack no push_swap.</div>
+</section>
+
+<!-- ============================================================ LIBFT MANUAL/README -->
+<section class="page" id="lf-manual">
+  <span class="eyebrow">documentação</span>
+  <h2 class="page-title">Regras do projeto, README.md e código real</h2>
+  <p class="page-desc">Resumo prático das instruções comuns da 42, o que o README.md precisa conter, e a implementação completa das 43 funções, comentada linha a linha.</p>
+
+  <div class="manual-subtabs" style="display:flex;gap:6px;margin-bottom:22px;border-bottom:1px solid var(--border);padding-bottom:14px;">
+    <button class="manual-subtab active" data-sub="lf-manual-conceitos">Regras &amp; README</button>
+    <button class="manual-subtab" data-sub="lf-manual-codigo">Implementação linha a linha</button>
+  </div>
+
+  <div id="lf-manual-conceitos" class="manual-pane active">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">regras técnicas específicas do libft</span><span class="part">TÉCNICO</span></div>
+    <div class="sheet-body prose">
+      <ul>
+        <li>Variáveis globais: <b>estritamente proibidas</b>.</li>
+        <li>Funções auxiliares de uma função complexa devem ser <code>static</code>, restritas ao arquivo.</li>
+        <li>Todos os arquivos na raiz do repositório — não é permitido submeter arquivos não usados.</li>
+        <li>Cada .c compila com <code>-Wall -Wextra -Werror</code>.</li>
+        <li>O empacotamento da biblioteca usa <code>ar</code> — <code>libtool</code> é proibido.</li>
+        <li><code>libft.a</code> precisa ser criado na raiz do repositório.</li>
+        <li>O qualificador <code>restrict</code> (C99) não pode ser usado nos protótipos, nem compilar com <code>-std=c99</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">regras comuns (todos os projetos 42)</span><span class="part">NORMA</span></div>
+    <div class="sheet-body prose">
+      <ul>
+        <li>Norma obrigatória, inclusive em arquivos de bônus (que aqui vão em <code>_bonus.c/h</code>, se houver).</li>
+        <li>Nenhum crash tolerado; toda memória alocada deve ser liberada.</li>
+        <li>Makefile com no mínimo as regras <code>NAME, all, clean, fclean, re</code>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">README.md obrigatório</span><span class="part">ENTREGA</span></div>
+    <div class="sheet-body prose">
+      <p>Precisa estar na raiz do repositório e incluir, no mínimo:</p>
+      <ul>
+        <li>Primeira linha em itálico: <i>This project has been created as part of the 42 curriculum by &lt;login1&gt;[, &lt;login2&gt;...]</i></li>
+        <li>Seção <b>Description</b> — objetivo e visão geral do projeto.</li>
+        <li>Seção <b>Instructions</b> — compilação, instalação e/ou execução.</li>
+        <li>Seção <b>Resources</b> — referências usadas e como a IA foi usada, especificando tarefas e partes.</li>
+        <li>Uma descrição detalhada da própria biblioteca criada (as 3 partes, o que cada uma resolve).</li>
+      </ul>
+    </div>
+  </div>
+  </div><!-- /lf-manual-conceitos -->
+
+  <div id="lf-manual-codigo" class="manual-pane">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">Implementação linha a linha — as 43 funções</span><span class="part">CÓDIGO REAL</span></div>
+    <div class="sheet-body">
+      <p class="sheet-note">Agrupado do jeito que costuma fazer sentido organizar os arquivos — nomes de arquivo são sugestões, o enunciado não exige nomes específicos além do prefixo <code>ft_</code>.</p>
+      <div class="file-toc">
+        <button class="ll-tab active" data-file="lf-ll-ctype">ft_ctype.c</button>
+        <button class="ll-tab" data-file="lf-ll-mem">ft_mem.c</button>
+        <button class="ll-tab" data-file="lf-ll-str">ft_str.c</button>
+        <button class="ll-tab" data-file="lf-ll-str2">ft_str_utils.c</button>
+        <button class="ll-tab" data-file="lf-ll-more">ft_more.c</button>
+        <button class="ll-tab" data-file="lf-ll-list">ft_list.c</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ft_ctype.c ==================== -->
+  <div id="lf-ll-ctype" class="ll-file active">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">classificação e conversão de caracteres</span><span class="part">7 FUNÇÕES</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">int	ft_isalpha(int c)
+{
+	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+}
+
+int	ft_isdigit(int c)
+{
+	return (c >= '0' && c <= '9');
+}
+
+int	ft_isalnum(int c)
+{
+	return (ft_isalpha(c) || ft_isdigit(c));
+}
+
+int	ft_isascii(int c)
+{
+	return (c >= 0 && c <= 127);
+}
+
+int	ft_isprint(int c)
+{
+	return (c >= 32 && c <= 126);
+}
+
+int	ft_toupper(int c)
+{
+	if (c >= 'a' && c <= 'z')
+		return (c - 32);
+	return (c);
+}
+
+int	ft_tolower(int c)
+{
+	if (c >= 'A' && c <= 'Z')
+		return (c + 32);
+	return (c);
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_isalpha</code>: uma única expressão booleana — testa se 'c' cai na faixa minúscula OU na faixa maiúscula da tabela ASCII. Já retorna 0 ou 1 direto, sem precisar de if.</li>
+        <li><code>ft_isdigit / ft_isascii / ft_isprint</code>: mesma ideia, só muda a faixa numérica comparada.</li>
+        <li><code>ft_isalnum</code>: reaproveita <code>ft_isalpha</code> e <code>ft_isdigit</code> em vez de reescrever as faixas — menos chance de errar um número.</li>
+        <li><code>ft_toupper / ft_tolower</code>: a distância entre 'a' e 'A' na tabela ASCII é sempre 32 — por isso soma/subtrai 32 só quando o caractere está na faixa certa; qualquer outro caractere passa intacto.</li>
+      </ol>
+    </div>
+  </div>
+  </div><!-- /lf-ll-ctype -->
+
+  <!-- ==================== ft_mem.c ==================== -->
+  <div id="lf-ll-mem" class="ll-file">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">memset, bzero, memcpy</span><span class="part">GRUPO MEM</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">void	*ft_memset(void *b, int c, size_t len)
+{
+	size_t			i;
+	unsigned char	*p;
+
+	p = (unsigned char *)b;
+	i = 0;
+	while (i < len)
+	{
+		p[i] = (unsigned char)c;
+		i++;
+	}
+	return (b);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	ft_memset(s, 0, n);
+}
+
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	size_t				i;
+	unsigned char		*d;
+	const unsigned char	*s;
+
+	if (!dst && !src)
+		return (NULL);
+	d = (unsigned char *)dst;
+	s = (const unsigned char *)src;
+	i = 0;
+	while (i < n)
+	{
+		d[i] = s[i];
+		i++;
+	}
+	return (dst);
+}</div>
+      <ol class="linebyline">
+        <li><code>unsigned char *p = (unsigned char *)b;</code> — trabalha sempre byte a byte (<code>void*</code> não pode ser indexado direto), independente do tipo real dos dados apontados.</li>
+        <li><code>ft_bzero</code> não reimplementa nada: é literalmente <code>ft_memset(s, 0, n)</code> — zerar é só um caso específico de preencher.</li>
+        <li><code>ft_memcpy</code>: copia byte a byte de src pra dst. Se as regiões se sobrepõem, o resultado é indefinido (por isso existe memmove).</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">memmove — cópia segura com sobreposição</span><span class="part">GRUPO MEM</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">void	*ft_memmove(void *dst, const void *src, size_t len)
+{
+	size_t				i;
+	unsigned char		*d;
+	const unsigned char	*s;
+
+	d = (unsigned char *)dst;
+	s = (const unsigned char *)src;
+	if (!d && !s)
+		return (NULL);
+	if (d < s)
+	{
+		i = 0;
+		while (i < len)
+		{
+			d[i] = s[i];
+			i++;
+		}
+	}
+	else
+	{
+		i = len;
+		while (i > 0)
+		{
+			i--;
+			d[i] = s[i];
+		}
+	}
+	return (dst);
+}</div>
+      <ol class="linebyline">
+        <li><code>if (d &lt; s)</code> — se o destino vem <b>antes</b> do src na memória, copiar do início pro fim é seguro (nunca sobrescreve um byte antes de lê-lo).</li>
+        <li><code>else</code> — se o destino vem <b>depois</b>, é o contrário: copiar de trás pra frente evita sobrescrever bytes de src que ainda não foram lidos.</li>
+        <li>É exatamente essa escolha de direção — baseada na posição relativa dos ponteiros — que diferencia memmove de memcpy.</li>
+      </ol>
+      <div class="why-box"><b>Exemplo do problema:</b> mover "abcdef" 2 posições pra direita dentro do mesmo buffer. Copiando do início pro fim, o 'a' original seria sobrescrito antes de ser lido de novo mais adiante — copiar de trás pra frente evita isso.</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">memchr &amp; memcmp</span><span class="part">GRUPO MEM</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">void	*ft_memchr(const void *s, int c, size_t n)
+{
+	size_t				i;
+	const unsigned char	*p;
+
+	p = (const unsigned char *)s;
+	i = 0;
+	while (i < n)
+	{
+		if (p[i] == (unsigned char)c)
+			return ((void *)(p + i));
+		i++;
+	}
+	return (NULL);
+}
+
+int	ft_memcmp(const void *s1, const void *s2, size_t n)
+{
+	size_t				i;
+	const unsigned char	*p1;
+	const unsigned char	*p2;
+
+	p1 = (const unsigned char *)s1;
+	p2 = (const unsigned char *)s2;
+	i = 0;
+	while (i < n)
+	{
+		if (p1[i] != p2[i])
+			return (p1[i] - p2[i]);
+		i++;
+	}
+	return (0);
+}</div>
+      <div class="why-box">Ambas param no primeiro byte que "importa": memchr no primeiro que <b>bate</b> com c, memcmp no primeiro que <b>difere</b> entre s1 e s2. Se nenhuma das duas condições acontece dentro de n bytes, retornam NULL / 0 respectivamente.</div>
+    </div>
+  </div>
+  </div><!-- /lf-ll-mem -->
+
+  <!-- ==================== ft_str.c ==================== -->
+  <div id="lf-ll-str" class="ll-file">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">strlen, strlcpy, strlcat</span><span class="part">GRUPO STR</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">size_t	ft_strlen(const char *s)
+{
+	size_t	i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+{
+	size_t	i;
+	size_t	srclen;
+
+	srclen = ft_strlen(src);
+	if (size == 0)
+		return (srclen);
+	i = 0;
+	while (i < size - 1 && src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = '\0';
+	return (srclen);
+}
+
+size_t	ft_strlcat(char *dst, const char *src, size_t size)
+{
+	size_t	dstlen;
+	size_t	srclen;
+	size_t	i;
+	size_t	j;
+
+	dstlen = ft_strlen(dst);
+	srclen = ft_strlen(src);
+	if (size <= dstlen)
+		return (size + srclen);
+	i = dstlen;
+	j = 0;
+	while (src[j] && i < size - 1)
+	{
+		dst[i] = src[j];
+		i++;
+		j++;
+	}
+	dst[i] = '\0';
+	return (dstlen + srclen);
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_strlcpy</code>: copia no máximo <code>size - 1</code> caracteres — sempre sobra espaço garantido pro '\0' final, mesmo que src seja maior que dst.</li>
+        <li><code>return (srclen);</code> em strlcpy — retorna o tamanho de src (não o que foi de fato copiado), justamente pra quem chamou poder comparar e detectar truncamento.</li>
+        <li><code>ft_strlcat</code>: primeiro acha onde dst termina (<code>dstlen</code>) — a concatenação começa dali.</li>
+        <li><code>if (size &lt;= dstlen) return (size + srclen);</code> — caso especial: se dst já preenche (ou excede) size, não há espaço nem pro '\0' — a função não mexe em nada e só reporta o tamanho que teria.</li>
+        <li>O <code>while</code> em strlcat some duas condições: ainda tem caractere em src <b>e</b> ainda cabe em dst respeitando size.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">strchr, strrchr, strncmp</span><span class="part">GRUPO STR</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if ((char)c == '\0')
+		return ((char *)s);
+	return (NULL);
+}
+
+char	*ft_strrchr(const char *s, int c)
+{
+	int	i;
+
+	i = ft_strlen(s);
+	while (i >= 0)
+	{
+		if (s[i] == (char)c)
+			return ((char *)&s[i]);
+		i--;
+	}
+	return (NULL);
+}
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n && (s1[i] || s2[i]))
+	{
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	return (0);
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_strchr</code> percorre pra frente e para no primeiro match — inclui o caso especial de procurar '\0' (que sempre "existe", no fim de qualquer string).</li>
+        <li><code>ft_strrchr</code> faz o oposto: começa em <code>ft_strlen(s)</code> (o próprio '\0') e anda pra trás — por isso acha a <b>última</b> ocorrência.</li>
+        <li><code>ft_strncmp</code>: a condição <code>(s1[i] || s2[i])</code> garante que o loop também para se uma das duas strings terminar antes de <code>n</code>.</li>
+        <li>A subtração de <code>unsigned char</code> no retorno evita bug de sinal com caracteres acima de 127.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">strnstr — busca de substring limitada</span><span class="part">GRUPO STR</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">char	*ft_strnstr(const char *big, const char *little, size_t len)
+{
+	size_t	i;
+	size_t	j;
+
+	if (!little[0])
+		return ((char *)big);
+	i = 0;
+	while (big[i] && i < len)
+	{
+		j = 0;
+		while (little[j] && big[i + j] == little[j] && i + j < len)
+			j++;
+		if (!little[j])
+			return ((char *)&big[i]);
+		i++;
+	}
+	return (NULL);
+}</div>
+      <ol class="linebyline">
+        <li><code>if (!little[0]) return ((char *)big);</code> — string vazia "bate" em qualquer posição, por convenção (igual ao strstr da libc).</li>
+        <li>Loop externo <code>i</code>: tenta cada posição de <code>big</code> como possível início do match, sem passar de <code>len</code>.</li>
+        <li>Loop interno <code>j</code>: compara <code>little</code> caractere a caractere a partir dali, também respeitando o limite <code>len</code>.</li>
+        <li><code>if (!little[j])</code> — se o loop interno rodou até o fim de <code>little</code> sem quebrar, é porque bateu tudo: retorna o ponteiro pro início do match.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">atoi, calloc, strdup</span><span class="part">GRUPO STR</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">int	ft_atoi(const char *str)
+{
+	long	res;
+	int		sign;
+
+	res = 0;
+	sign = 1;
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		res = res * 10 + (*str - '0');
+		str++;
+	}
+	return ((int)(res * sign));
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*mem;
+
+	if (nmemb != 0 && size > (size_t)-1 / nmemb)
+		return (NULL);
+	mem = malloc(nmemb * size);
+	if (!mem)
+		return (NULL);
+	ft_memset(mem, 0, nmemb * size);
+	return (mem);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	char	*dup;
+	size_t	i;
+
+	dup = malloc(ft_strlen(s1) + 1);
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (s1[i])
+	{
+		dup[i] = s1[i];
+		i++;
+	}
+	dup[i] = '\0';
+	return (dup);
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_atoi</code>: primeiro pula espaços/whitespace, depois lê no máximo um sinal, depois acumula dígitos — nessa ordem exata, igual ao atoi da libc.</li>
+        <li><code>res</code> é <code>long</code> em vez de <code>int</code> de propósito — evita overflow durante o acúmulo antes do cast final pra int.</li>
+        <li><code>ft_calloc</code>: a checagem <code>size &gt; (size_t)-1 / nmemb</code> detecta overflow <b>antes</b> de multiplicar — se nmemb*size estourasse o tipo, o malloc alocaria menos memória do que o esperado, silenciosamente.</li>
+        <li><code>ft_calloc</code> reaproveita <code>ft_memset</code> pra zerar — não reinventa o loop de preenchimento.</li>
+        <li><code>ft_strdup</code>: aloca <code>strlen + 1</code> (o "+1" é sempre o '\0') e copia caractere por caractere.</li>
+      </ol>
+    </div>
+  </div>
+  </div><!-- /lf-ll-str -->
+
+  <!-- ==================== ft_str_utils.c (parte 2) ==================== -->
+  <div id="lf-ll-str2" class="ll-file">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">substr, strjoin, strtrim</span><span class="part">PARTE 2</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*sub;
+	size_t	i;
+	size_t	slen;
+
+	slen = ft_strlen(s);
+	if (start >= slen)
+		return (ft_strdup(""));
+	if (len > slen - start)
+		len = slen - start;
+	sub = malloc(len + 1);
+	if (!sub)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		sub[i] = s[start + i];
+		i++;
+	}
+	sub[i] = '\0';
+	return (sub);
+}
+
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*res;
+	size_t	len1;
+	size_t	len2;
+	size_t	i;
+
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	res = malloc(len1 + len2 + 1);
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (i < len1)
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	i = 0;
+	while (i < len2)
+	{
+		res[len1 + i] = s2[i];
+		i++;
+	}
+	res[len1 + len2] = '\0';
+	return (res);
+}
+
+char	*ft_strtrim(char const *s1, char const *set)
+{
+	size_t	start;
+	size_t	end;
+
+	start = 0;
+	while (s1[start] && ft_strchr(set, s1[start]))
+		start++;
+	end = ft_strlen(s1);
+	while (end > start && ft_strchr(set, s1[end - 1]))
+		end--;
+	return (ft_substr(s1, start, end - start));
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_substr</code>: <code>if (start &gt;= slen)</code> — pedir uma faixa que começa depois do fim da string não é erro, só devolve uma string vazia.</li>
+        <li><code>if (len &gt; slen - start) len = slen - start;</code> — "recorta" len se ele passar do fim de s, pra nunca ler além do que existe.</li>
+        <li><code>ft_strjoin</code>: aloca <code>len1 + len2 + 1</code> de uma vez e copia as duas strings em sequência — sem realocar no meio do caminho.</li>
+        <li><code>ft_strtrim</code>: <code>start</code> avança enquanto o caractere atual está em <code>set</code>; <code>end</code> recua da mesma forma, a partir do fim.</li>
+        <li>No fim, <code>ft_strtrim</code> só chama <code>ft_substr</code> com a faixa "limpa" já calculada — reaproveita a função em vez de copiar a lógica de novo.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">split — a mais trabalhosa da parte 2</span><span class="part">PARTE 2</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">static int	word_count(char const *s, char c)
+{
+	int	count;
+	int	in_word;
+
+	count = 0;
+	in_word = 0;
+	while (*s)
+	{
+		if (*s != c && !in_word)
+		{
+			in_word = 1;
+			count++;
+		}
+		else if (*s == c)
+			in_word = 0;
+		s++;
+	}
+	return (count);
+}
+
+char	**ft_split(char const *s, char c)
+{
+	char	**words;
+	int		i;
+	int		start;
+
+	words = malloc((word_count(s, c) + 1) * sizeof(char *));
+	if (!words)
+		return (NULL);
+	i = 0;
+	while (*s)
+	{
+		while (*s == c)
+			s++;
+		start = 0;
+		if (*s && *s != c)
+		{
+			while (s[start] && s[start] != c)
+				start++;
+			words[i++] = ft_substr(s, 0, start);
+			s += start;
+		}
+	}
+	words[i] = NULL;
+	return (words);
+}</div>
+      <ol class="linebyline">
+        <li><code>word_count</code> (static, só existe nesse arquivo): conta transições de "fora de uma palavra" pra "dentro de uma palavra" — é assim que sabe quantos ponteiros alocar antes de começar a cortar de verdade.</li>
+        <li><code>words = malloc((word_count(s, c) + 1) * sizeof(char *));</code> — +1 sempre pro NULL final do array.</li>
+        <li>Dentro do while principal: primeiro <code>while (*s == c) s++;</code> pula qualquer sequência de delimitadores.</li>
+        <li>Depois, um segundo <code>while</code> mede o tamanho da palavra atual (<code>start</code>), sem ainda copiar nada.</li>
+        <li><code>words[i++] = ft_substr(s, 0, start);</code> — só agora aloca e copia a palavra, usando <code>ft_substr</code> em vez de duplicar lógica de cópia.</li>
+        <li><code>s += start;</code> — avança <code>s</code> pro fim da palavra recém-copiada; o próximo giro do loop principal volta a pular delimitadores.</li>
+        <li><code>words[i] = NULL;</code> no final — fecha o array, exigido pelo enunciado.</li>
+      </ol>
+      <div class="pitfall"><b>Cuidado com falha de malloc no meio do split:</b> essa versão simplificada não trata o caso de <code>ft_substr</code> retornar NULL no meio do array — numa entrega real vale liberar tudo que já foi alocado antes de devolver NULL.</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">itoa</span><span class="part">PARTE 2</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">static int	nb_len(long n)
+{
+	int	len;
+
+	len = 0;
+	if (n <= 0)
+		len++;
+	while (n != 0)
+	{
+		n /= 10;
+		len++;
+	}
+	return (len);
+}
+
+char	*ft_itoa(int n)
+{
+	char	*res;
+	long	nb;
+	int		len;
+
+	nb = n;
+	len = nb_len(nb);
+	res = malloc(len + 1);
+	if (!res)
+		return (NULL);
+	res[len] = '\0';
+	if (nb == 0)
+		res[0] = '0';
+	if (nb < 0)
+	{
+		res[0] = '-';
+		nb = -nb;
+	}
+	while (nb != 0)
+	{
+		res[--len] = (nb % 10) + '0';
+		nb /= 10;
+	}
+	return (res);
+}</div>
+      <ol class="linebyline">
+        <li><code>long nb = n;</code> — converte pra long ANTES de qualquer operação, porque <code>-n</code> quando <code>n == INT_MIN</code> estoura um int (não existe INT_MAX+1 positivo do mesmo tamanho).</li>
+        <li><code>nb_len</code>: <code>if (n &lt;= 0) len++;</code> reserva 1 posição extra — o '-' pra negativos, ou o próprio dígito '0' pro caso n==0 (que não entra no while de divisão).</li>
+        <li><code>res[len] = '\0';</code> logo depois do malloc — fecha a string antes de preencher os dígitos de trás pra frente.</li>
+        <li>O <code>while (nb != 0)</code> escreve um dígito por vez começando <b>do fim</b> pro começo (<code>res[--len]</code>), porque o último dígito calculado (resto da divisão) é sempre o menos significativo.</li>
+        <li>Se <code>nb</code> era negativo, o '-' já ocupava <code>res[0]</code> antes do loop começar — o loop de dígitos nunca escreve nessa posição porque <code>len</code> não desce até lá.</li>
+      </ol>
+    </div>
+  </div>
+  </div><!-- /lf-ll-str2 -->
+
+  <!-- ==================== ft_more.c ==================== -->
+  <div id="lf-ll-more" class="ll-file">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">strmapi &amp; striteri</span><span class="part">PONTEIRO DE FUNÇÃO</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
+{
+	char	*res;
+	size_t	i;
+	size_t	len;
+
+	len = ft_strlen(s);
+	res = malloc(len + 1);
+	if (!res)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		res[i] = f(i, s[i]);
+		i++;
+	}
+	res[len] = '\0';
+	return (res);
+}
+
+void	ft_striteri(char *s, void (*f)(unsigned int, char *))
+{
+	unsigned int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		f(i, &s[i]);
+		i++;
+	}
+}</div>
+      <ol class="linebyline">
+        <li><code>char (*f)(unsigned int, char)</code> — 'f' é um ponteiro pra função que recebe um índice e um caractere, e devolve um caractere novo.</li>
+        <li><code>ft_strmapi</code> aloca uma string <b>nova</b> e preenche cada posição com <code>f(i, s[i])</code> — a original não é tocada.</li>
+        <li><code>ft_striteri</code> recebe <code>void (*f)(unsigned int, char*)</code> — repare que aqui é <b>ponteiro</b> pro char, não o char em si.</li>
+        <li>Por causa disso, <code>f</code> pode modificar <code>s</code> diretamente através de <code>&amp;s[i]</code> — é assim que ela consegue alterar a string original "no lugar", sem alocar nada.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">putchar_fd, putstr_fd, putendl_fd, putnbr_fd</span><span class="part">SAÍDA</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">void	ft_putchar_fd(char c, int fd)
+{
+	write(fd, &c, 1);
+}
+
+void	ft_putstr_fd(char *s, int fd)
+{
+	while (s && *s)
+	{
+		write(fd, s, 1);
+		s++;
+	}
+}
+
+void	ft_putendl_fd(char *s, int fd)
+{
+	ft_putstr_fd(s, fd);
+	ft_putchar_fd('\n', fd);
+}
+
+void	ft_putnbr_fd(int n, int fd)
+{
+	long	nb;
+
+	nb = n;
+	if (nb < 0)
+	{
+		ft_putchar_fd('-', fd);
+		nb = -nb;
+	}
+	if (nb >= 10)
+		ft_putnbr_fd(nb / 10, fd);
+	ft_putchar_fd(nb % 10 + '0', fd);
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_putchar_fd</code>: write() espera um ponteiro, por isso <code>&amp;c</code> mesmo escrevendo só 1 byte.</li>
+        <li><code>ft_putstr_fd</code> e <code>ft_putendl_fd</code> reaproveitam <code>ft_putchar_fd</code> — nenhuma delas chama write() diretamente de novo.</li>
+        <li><code>ft_putnbr_fd</code> é recursiva: <code>long nb = n;</code> de novo pelo mesmo motivo do itoa — proteger contra o overflow de <code>-INT_MIN</code>.</li>
+        <li><code>if (nb &gt;= 10) ft_putnbr_fd(nb / 10, fd);</code> — imprime primeiro os dígitos mais significativos (chamando a si mesma com o número "cortado"), e só depois o dígito atual — é isso que garante a ordem correta (não sai de trás pra frente).</li>
+      </ol>
+    </div>
+  </div>
+  </div><!-- /lf-ll-more -->
+
+  <!-- ==================== ft_list.c (parte 3) ==================== -->
+  <div id="lf-ll-list" class="ll-file">
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">lstnew &amp; lstadd_front</span><span class="part">PARTE 3</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">t_list	*ft_lstnew(void *content)
+{
+	t_list	*node;
+
+	node = malloc(sizeof(t_list));
+	if (!node)
+		return (NULL);
+	node->content = content;
+	node->next = NULL;
+	return (node);
+}
+
+void	ft_lstadd_front(t_list **lst, t_list *new)
+{
+	if (!lst || !new)
+		return ;
+	new->next = *lst;
+	*lst = new;
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_lstnew</code>: aloca UM nó, guarda o content recebido, e zera next — um nó novo nunca sabe de antemão qual vai ser seu próximo.</li>
+        <li><code>ft_lstadd_front</code>: <code>new->next = *lst;</code> primeiro — o novo nó aponta pro que <b>era</b> o início.</li>
+        <li>Só depois <code>*lst = new;</code> — se fosse na ordem inversa, perderíamos a referência ao resto da lista antes de reconectá-la.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">lstsize, lstlast &amp; lstadd_back</span><span class="part">PARTE 3</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">int	ft_lstsize(t_list *lst)
+{
+	int	count;
+
+	count = 0;
+	while (lst)
+	{
+		count++;
+		lst = lst->next;
+	}
+	return (count);
+}
+
+t_list	*ft_lstlast(t_list *lst)
+{
+	if (!lst)
+		return (NULL);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
+}
+
+void	ft_lstadd_back(t_list **lst, t_list *new)
+{
+	t_list	*last;
+
+	if (!lst || !new)
+		return ;
+	if (!*lst)
+	{
+		*lst = new;
+		return ;
+	}
+	last = ft_lstlast(*lst);
+	last->next = new;
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_lstsize</code> e <code>ft_lstlast</code> têm a mesma estrutura de travessia — a diferença é só a condição de parada: contar todos vs. parar em quem não tem next.</li>
+        <li><code>ft_lstadd_back</code>: <code>if (!*lst) { *lst = new; return; }</code> — caso especial: lista vazia, o novo nó direto vira o único (e o primeiro) da lista.</li>
+        <li>Caso contrário, reaproveita <code>ft_lstlast</code> pra achar o fim, e só então conecta <code>last-&gt;next = new;</code>.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">lstdelone &amp; lstclear</span><span class="part">PARTE 3</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">void	ft_lstdelone(t_list *lst, void (*del)(void *))
+{
+	if (!lst)
+		return ;
+	del(lst->content);
+	free(lst);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void *))
+{
+	t_list	*next;
+
+	if (!lst)
+		return ;
+	while (*lst)
+	{
+		next = (*lst)->next;
+		ft_lstdelone(*lst, del);
+		*lst = next;
+	}
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_lstdelone</code> libera <b>só um nó</b>: primeiro o content (via del), depois o próprio nó. Não toca no next — não é responsabilidade dela reconectar a lista.</li>
+        <li><code>ft_lstclear</code>: <code>next = (*lst)->next;</code> <b>antes</b> de chamar lstdelone — se guardasse o next depois de já ter liberado o nó, seria use-after-free.</li>
+        <li>Depois de <code>ft_lstdelone(*lst, del);</code>, o ponteiro <code>*lst</code> avança pro <code>next</code> que já tinha sido salvo.</li>
+        <li>Quando o loop termina (<code>*lst == NULL</code>), a lista inteira já foi liberada e o ponteiro original está zerado.</li>
+      </ol>
+      <div class="pitfall"><b>O erro clássico:</b> chamar <code>ft_lstdelone(node, del)</code> e só depois fazer <code>node = node->next</code> — nesse ponto <code>node</code> já foi liberado, e ler <code>node->next</code> é use-after-free.</div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-head"><span class="fn">lstiter &amp; lstmap</span><span class="part">PARTE 3</span></div>
+    <div class="sheet-body">
+      <div class="codeblock">void	ft_lstiter(t_list *lst, void (*f)(void *))
+{
+	while (lst)
+	{
+		f(lst->content);
+		lst = lst->next;
+	}
+}
+
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
+{
+	t_list	*new_list;
+	t_list	*node;
+	void	*mapped;
+
+	new_list = NULL;
+	while (lst)
+	{
+		mapped = f(lst->content);
+		node = ft_lstnew(mapped);
+		if (!node)
+		{
+			ft_lstclear(&new_list, del);
+			return (NULL);
+		}
+		ft_lstadd_back(&new_list, node);
+		lst = lst->next;
+	}
+	return (new_list);
+}</div>
+      <ol class="linebyline">
+        <li><code>ft_lstiter</code> é a versão mais simples: percorre e aplica <code>f</code>, sem alocar nada e sem retorno.</li>
+        <li><code>ft_lstmap</code> percorre a lista <b>original</b> (<code>lst</code>) enquanto constrói uma lista <b>nova</b> (<code>new_list</code>) em paralelo — a original nunca é modificada.</li>
+        <li><code>mapped = f(lst->content);</code> — aplica a transformação primeiro, depois cria um nó novo pra guardar o resultado.</li>
+        <li><code>if (!node) { ft_lstclear(&amp;new_list, del); return (NULL); }</code> — se o malloc de <code>ft_lstnew</code> falhar no meio do caminho, desfaz tudo que já tinha sido criado (usando o próprio <code>del</code> recebido) em vez de vazar memória.</li>
+        <li><code>ft_lstadd_back(&amp;new_list, node);</code> — reaproveita a função de inserção no fim, em vez de reimplementar a lógica de anexar.</li>
+      </ol>
+    </div>
+  </div>
+  </div><!-- /lf-ll-list -->
+  </div><!-- /lf-manual-codigo -->
+</section>
+
+</div><!-- /proj-libft -->
+
+</div><!-- /wrap -->
+
+<footer id="site-footer">guia visual · 42 School · push_swap, get_next_line &amp; libft · feito para compartilhar com a turma</footer>
 
 <script>
 /* ================= reusable stack-comic engine ================= */
@@ -2208,34 +3853,581 @@ function runPushSwap(initial){
   });
 })();
 
-/* ================= manual sub-tabs ================= */
+/* ================= manual sub-tabs (scoped per section) ================= */
 document.querySelectorAll('.manual-subtab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.manual-subtab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.manual-pane').forEach(p=>p.classList.remove('active'));
+    const scope = btn.closest('section.page');
+    scope.querySelectorAll('.manual-subtab').forEach(b=>b.classList.remove('active'));
+    scope.querySelectorAll('.manual-pane').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.sub).classList.add('active');
   });
 });
 document.querySelectorAll('.ll-tab').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.ll-tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.ll-file').forEach(p=>p.classList.remove('active'));
+    const scope = btn.closest('.manual-pane') || btn.closest('section.page');
+    scope.querySelectorAll('.ll-tab').forEach(b=>b.classList.remove('active'));
+    scope.querySelectorAll('.ll-file').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.file).classList.add('active');
   });
 });
 
-/* ================= tab switching ================= */
-document.querySelectorAll('#tabs button').forEach(btn=>{
+/* ================= tab switching (scoped per project) ================= */
+document.querySelectorAll('.tabs-group button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    document.querySelectorAll('#tabs button').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('section.page').forEach(s=>s.classList.remove('active'));
+    const group = btn.closest('.tabs-group');
+    const projBlock = document.getElementById(group.dataset.project);
+    group.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    projBlock.querySelectorAll('section.page').forEach(s=>s.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById(btn.dataset.target).classList.add('active');
     window.scrollTo({top:0, behavior:'instant'});
   });
 });
+
+/* ================= animated function walkthroughs (GNL + libft) ================= */
+/* ---- helpers ---- */
+function mkRow(label, str, opts = {}) {
+  const arr = (str === '' || str === undefined || str === null) ? [] : str.split('');
+  const chars = arr.map((ch, i) => {
+    const c = { ch: ch === '\n' ? '⏎' : (ch === ' ' ? '␠' : ch) };
+    if (opts.hi !== undefined) {
+      if (Array.isArray(opts.hi)) { if (i >= opts.hi[0] && i <= opts.hi[1]) c.hi = true; }
+      else if (i === opts.hi) c.hi = true;
+    }
+    if (opts.hi2 !== undefined && i === opts.hi2) c.hi2 = true;
+    if (opts.ok !== undefined) {
+      if (Array.isArray(opts.ok)) { if (i >= opts.ok[0] && i <= opts.ok[1]) c.ok = true; }
+    }
+    if (opts.dimFrom !== undefined && i >= opts.dimFrom) c.dim = true;
+    if (opts.ptr && opts.ptr[i]) c.ptr = opts.ptr[i];
+    return c;
+  });
+  if (chars.length === 0) chars.push({ ch: '∅', dim: true });
+  return { label, chars };
+}
+
+/* ---- category generators ---- */
+function genClassify(fnName, ch, pred, className) {
+  const ok = pred(ch);
+  return [
+    { rows: [mkRow('c', ch)], code: `${fnName}('${ch}')`, why: `Testa se '${ch}' pertence à classe: ${className}.` },
+    { rows: [mkRow('c', ch, { hi: 0 })], code: `${ok ? '1' : '0'}`, why: ok ? `Sim — pertence. Retorna 1.` : `Não — não pertence. Retorna 0.` },
+  ];
+}
+
+function genTransform(fnName, ch, fn) {
+  const out = fn(ch);
+  return [
+    { rows: [mkRow('c', ch)], code: `${fnName}('${ch}')`, why: `Caractere de entrada.` },
+    { rows: [mkRow('c', ch, { hi: 0 }), mkRow('retorno', out, { hi2: 0 })], code: `return ('${out}');`, why: ch === out ? `Não muda — já não é o alvo da conversão.` : `Convertido de '${ch}' pra '${out}'.` },
+  ];
+}
+
+function genScanLen(str) {
+  const steps = [];
+  for (let i = 0; i <= str.length; i++) {
+    const done = i >= str.length;
+    steps.push({
+      rows: [mkRow('s', str, { hi: done ? undefined : i, ptr: { [Math.min(i, str.length - 1)]: 'i' } })],
+      code: done ? `s[${i}] == '\\0' -> stop` : `i = ${i}; // s[i]='${str[i]}'`,
+      why: done ? `Achou o fim da string. strlen retorna ${str.length}.` : `Ainda não é '\\0' — avança.`
+    });
+  }
+  return steps;
+}
+
+function genFill(size, fillCh, fnLabel) {
+  fnLabel = fnLabel || 'memset';
+  const steps = [];
+  let cur = new Array(size).fill('?');
+  steps.push({ rows: [mkRow('mem', cur.join(''))], code: `${fnLabel}(mem, '${fillCh}', ${size});`, why: `Memória com lixo antes do preenchimento.` });
+  for (let i = 0; i < size; i++) {
+    cur[i] = fillCh;
+    steps.push({ rows: [mkRow('mem', cur.join(''), { hi: i, ok: [0, i] })], code: `mem[${i}] = '${fillCh}';`, why: `Escreve o byte ${i + 1} de ${size}.` });
+  }
+  return steps;
+}
+
+function genCopy(src, n, fnLabel) {
+  fnLabel = fnLabel || 'memcpy';
+  const steps = [];
+  let dst = new Array(n).fill('?');
+  steps.push({ rows: [mkRow('src', src), mkRow('dst', dst.join(''))], code: `${fnLabel}(dst, src, ${n});`, why: `dst começa com lixo.` });
+  for (let i = 0; i < n; i++) {
+    dst[i] = src[i];
+    steps.push({
+      rows: [mkRow('src', src, { hi: i }), mkRow('dst', dst.join(''), { hi: i, ok: [0, i] })],
+      code: `dst[${i}] = src[${i}]; // '${src[i]}'`, why: `Copia o byte ${i + 1} de ${n}.`
+    });
+  }
+  return steps;
+}
+
+function genGNLSteps(content, B) {
+  const steps = [];
+  let pos = 0, stash = '', callNum = 0;
+  while (true) {
+    callNum++;
+    steps.push({ rows: [mkRow('stash', stash)], code: `--- get_next_line() chamada #${callNum} ---`, why: 'Início da chamada: stash contém o que sobrou da vez anterior.' });
+    while (!stash.includes('\n') && pos < content.length) {
+      const chunk = content.slice(pos, pos + B);
+      pos += chunk.length;
+      stash += chunk;
+      steps.push({ rows: [mkRow('buffer lido', chunk), mkRow('stash', stash)], code: `read(fd, buffer, ${B}); // "${chunk}"`, why: `Lê até ${B} bytes e concatena no stash.` });
+    }
+    if (stash.length === 0) {
+      steps.push({ rows: [mkRow('stash', '')], code: 'return (NULL);', why: 'Nada mais pra ler e nada sobrando — fim do arquivo.' });
+      break;
+    }
+    const nlIdx = stash.indexOf('\n');
+    let line, rest;
+    if (nlIdx === -1) { line = stash; rest = ''; } else { line = stash.slice(0, nlIdx + 1); rest = stash.slice(nlIdx + 1); }
+    steps.push({
+      rows: [mkRow('linha devolvida', line), mkRow('stash (resto)', rest)],
+      code: `return line;`,
+      why: nlIdx === -1 ? "Fim do arquivo sem '\\n' final — devolve o que sobrou mesmo assim." : "Encontrou '\\n' — devolve tudo até ele, guarda o resto."
+    });
+    stash = rest;
+    if (pos >= content.length && stash.length === 0) break;
+    if (callNum > 8) break;
+  }
+  return steps;
+}
+
+function genCopyBounded(dst, src, size) {
+  // strlcpy: copy min(size-1, len(src)) chars then null-terminate
+  const steps = [];
+  const n = Math.max(size - 1, 0);
+  let cur = new Array(size).fill('?');
+  steps.push({ rows: [mkRow('src', src), mkRow('dst', cur.join(''))], code: `strlcpy(dst, src, ${size});`, why: `dst tem espaço pra ${size} bytes (${n} úteis + '\\0').` });
+  for (let i = 0; i < Math.min(n, src.length); i++) {
+    cur[i] = src[i];
+    steps.push({ rows: [mkRow('src', src, { hi: i }), mkRow('dst', cur.join(''), { hi: i, ok: [0, i] })], code: `dst[${i}] = src[${i}];`, why: `Copia respeitando o limite de ${size}.` });
+  }
+  steps.push({ rows: [mkRow('dst', cur.join(''), { ok: [0, Math.min(n, src.length) - 1] })], code: `return (${src.length});`, why: `Retorna o tamanho de src — permite detectar truncamento se for maior que size.` });
+  return steps;
+}
+
+function genConcatBounded(dst, src, size) {
+  const steps = [];
+  let cur = dst.split('');
+  steps.push({ rows: [mkRow('dst', dst), mkRow('src', src)], code: `strlcat(dst, src, ${size});`, why: `Primeiro localiza o fim de dst.` });
+  const start = dst.length;
+  const room = Math.max(size - dst.length - 1, 0);
+  for (let i = 0; i < Math.min(room, src.length); i++) {
+    cur[start + i] = src[i];
+    steps.push({ rows: [mkRow('dst', cur.join(''), { hi: start + i, ok: [0, start + i] }), mkRow('src', src, { hi: i })], code: `dst[${start + i}] = src[${i}];`, why: `Concatena respeitando o espaço restante até size.` });
+  }
+  return steps;
+}
+
+function genSearchChar(str, target, fromEnd) {
+  const steps = [];
+  const order = fromEnd ? [...Array(str.length).keys()].reverse() : [...Array(str.length).keys()];
+  let found = -1;
+  for (const i of order) {
+    const match = str[i] === target;
+    steps.push({ rows: [mkRow('s', str, { hi: i, ok: match ? [i, i] : undefined })], code: `s[${i}] == '${target}' ?`, why: match ? `Achou! Retorna &s[${i}].` : `Não é '${target}' — continua.` });
+    if (match) { found = i; break; }
+  }
+  if (found === -1) steps.push({ rows: [mkRow('s', str)], code: `return (NULL);`, why: `'${target}' não aparece na string.` });
+  return steps;
+}
+
+function genSearchCharN(str, target, n) {
+  const steps = [];
+  let found = -1;
+  for (let i = 0; i < n; i++) {
+    const match = str[i] === target;
+    steps.push({ rows: [mkRow('s', str, { hi: i, dimFrom: n, ok: match ? [i, i] : undefined })], code: `s[${i}] == '${target}' ? (limite n=${n})`, why: match ? `Achou dentro do limite de ${n} bytes.` : `Continua procurando dentro do limite.` });
+    if (match) { found = i; break; }
+  }
+  if (found === -1) steps.push({ rows: [mkRow('s', str, { dimFrom: n })], code: `return (NULL);`, why: `Não achou '${target}' nos primeiros ${n} bytes.` });
+  return steps;
+}
+
+function genCompareN(a, b, n) {
+  const steps = [];
+  for (let i = 0; i < n; i++) {
+    const diff = a[i] !== b[i];
+    steps.push({
+      rows: [mkRow('a', a, { hi: i, dimFrom: n }), mkRow('b', b, { hi: i, dimFrom: n })],
+      code: `a[${i}] ('${a[i]}') vs b[${i}] ('${b[i]}')`,
+      why: diff ? `Diferentes! Retorna a[${i}] - b[${i}] = ${a.charCodeAt(i) - b.charCodeAt(i)}.` : `Iguais — continua.`
+    });
+    if (diff) return steps;
+  }
+  steps.push({ rows: [mkRow('a', a, { dimFrom: n, ok: [0, n - 1] }), mkRow('b', b, { dimFrom: n, ok: [0, n - 1] })], code: `return (0);`, why: `Os primeiros ${n} bytes são idênticos.` });
+  return steps;
+}
+
+function genSearchSubstrN(big, little, len) {
+  const steps = [];
+  const lim = Math.min(len, big.length);
+  for (let i = 0; i <= lim - little.length; i++) {
+    let match = true;
+    for (let j = 0; j < little.length; j++) if (big[i + j] !== little[j]) { match = false; break; }
+    steps.push({ rows: [mkRow('big', big, { hi: [i, i + little.length - 1], dimFrom: lim }), mkRow('little', little)], code: `strncmp(&big[${i}], little, ${little.length})`, why: match ? `Bateu! Retorna &big[${i}].` : `Não bateu nessa posição — tenta a próxima.` });
+    if (match) return steps;
+  }
+  steps.push({ rows: [mkRow('big', big, { dimFrom: lim })], code: `return (NULL);`, why: `'${little}' não aparece dentro do limite de ${len} bytes.` });
+  return steps;
+}
+
+function genAtoi(str) {
+  const steps = [];
+  let i = 0;
+  steps.push({ rows: [mkRow('str', str, { hi: 0 })], code: `i = 0;`, why: `Começa lendo caractere por caractere.` });
+  while (str[i] === ' ') { i++; steps.push({ rows: [mkRow('str', str, { hi: i })], code: `s[i] == ' ' -> i++`, why: `Pula espaços em branco iniciais.` }); }
+  let sign = 1;
+  if (str[i] === '-' || str[i] === '+') { sign = str[i] === '-' ? -1 : 1; steps.push({ rows: [mkRow('str', str, { hi: i })], code: `sinal = ${sign};`, why: `Guarda o sinal antes dos dígitos.` }); i++; }
+  let n = 0;
+  while (str[i] >= '0' && str[i] <= '9') {
+    n = n * 10 + (str.charCodeAt(i) - 48);
+    steps.push({ rows: [mkRow('str', str, { hi: i, ok: [0, i] })], code: `n = n * 10 + ${str[i]}; // n = ${n}`, why: `Acumula o dígito.` });
+    i++;
+  }
+  steps.push({ rows: [mkRow('str', str, { ok: [0, i - 1] })], code: `return (${n * sign});`, why: `Achou um caractere que não é dígito — para e retorna o valor acumulado.` });
+  return steps;
+}
+
+function genSubstr(s, start, len) {
+  const steps = [];
+  const end = Math.min(start + len, s.length);
+  steps.push({ rows: [mkRow('s', s, { hi: [start, Math.max(end - 1, start)] })], code: `ft_substr(s, ${start}, ${len})`, why: `Marca a faixa [${start}, ${start + len}) dentro de s.` });
+  steps.push({ rows: [mkRow('resultado', s.slice(start, end), { ok: [0, end - start - 1] })], code: `return (copy);`, why: `Copia só essa faixa pra uma string nova.` });
+  return steps;
+}
+
+function genJoin(s1, s2) {
+  return [
+    { rows: [mkRow('s1', s1), mkRow('s2', s2)], code: `ft_strjoin(s1, s2)`, why: `As duas strings originais, intactas.` },
+    { rows: [mkRow('resultado', s1 + s2, { ok: [0, s1.length + s2.length - 1] })], code: `return (s1 + s2);`, why: `Aloca uma string nova com o tamanho de s1+s2 e copia as duas.` },
+  ];
+}
+
+function genTrim(s, set) {
+  let start = 0, end = s.length - 1;
+  while (start <= end && set.includes(s[start])) start++;
+  while (end >= start && set.includes(s[end])) end--;
+  return [
+    { rows: [mkRow('s1', s), mkRow('set', set)], code: `ft_strtrim(s1, set)`, why: `Vai remover, do início e do fim, qualquer caractere presente em 'set'.` },
+    { rows: [mkRow('s1', s, { hi: [start, end] })], code: `faixa útil = [${start}, ${end}]`, why: `Encontrou onde o conteúdo "útil" começa e termina.` },
+    { rows: [mkRow('resultado', s.slice(start, end + 1), { ok: [0, end - start] })], code: `return (copy);`, why: `Copia só o miolo, sem os caracteres de 'set' nas pontas.` },
+  ];
+}
+
+function genItoa(n) {
+  const steps = [];
+  const neg = n < 0;
+  let digits = Math.abs(n).toString().split('');
+  steps.push({ rows: [mkRow('n', n.toString())], code: `ft_itoa(${n})`, why: neg ? `Número negativo — vai precisar de um '-' no resultado.` : `Número positivo.` });
+  let acc = neg ? '-' : '';
+  for (const d of digits) { acc += d; steps.push({ rows: [mkRow('resultado', acc, { hi: acc.length - 1 })], code: `acc = "${acc}"`, why: `Vai extraindo um dígito por vez (geralmente de trás pra frente) e monta a string.` }); }
+  return steps;
+}
+
+function genMapi(s, fn, label) {
+  const steps = [];
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    const o = fn(s[i]);
+    out += o;
+    steps.push({ rows: [mkRow('s', s, { hi: i }), mkRow('resultado', out + '_'.repeat(s.length - out.length), { hi: i, dimFrom: out.length })], code: `f(${i}, '${s[i]}') -> '${o}'`, why: `Aplica f (${label}) no índice ${i} e escreve na string nova.` });
+  }
+  return steps;
+}
+
+function genIteri(s, fn, label) {
+  const steps = [];
+  let cur = s.split('');
+  for (let i = 0; i < s.length; i++) {
+    cur[i] = fn(cur[i]);
+    steps.push({ rows: [mkRow('s (in place)', cur.join(''), { hi: i, ok: [0, i] })], code: `f(${i}, &s[${i}])`, why: `Modifica o caractere direto no lugar (${label}), sem criar string nova.` });
+  }
+  return steps;
+}
+
+function genWriteOut(s, withNewline) {
+  const full = withNewline ? s + '\\n' : s;
+  return [
+    { rows: [mkRow('s', s)], code: `write(fd, s, len)`, why: `A string a ser escrita.` },
+    { rows: [mkRow('fd (saída)', full, { ok: [0, full.length - 1] })], code: `-- escrito no fd --`, why: withNewline ? `Escreve a string e adiciona um '\\n' no final.` : `Escreve exatamente esses bytes no file descriptor.` },
+  ];
+}
+
+function genSplit(s, delim) {
+  const words = s.split(delim).filter(w => w.length > 0);
+  const steps = [];
+  steps.push({ rows: [mkRow('s', s.split('').map(c => c === delim ? '|' : c).join(''))], code: `ft_split(s, '${delim}')`, why: `Localiza cada ocorrência do delimitador '${delim === ' ' ? '␠' : delim}' pra saber onde uma palavra começa e termina.` });
+  words.forEach((w, i) => steps.push({ rows: [mkRow(`palavra[${i}]`, w, { ok: [0, w.length - 1] })], code: `words[${i}] = "${w}";`, why: `Aloca e copia essa palavra pro array de resultado.` }));
+  steps.push({ rows: [mkRow('resultado', words.map(w => `"${w}"`).join(',') + ',NULL')], code: `return (words);`, why: `Array terminado em NULL, com ${words.length} palavras.` });
+  return steps;
+}
+
+/* ---- linked list generators ---- */
+
+function lnodes(list, hiIdx, cls) {
+  return list.map((v, i) => ({ v, cls: i === hiIdx ? (cls || 'hi') : '' }));
+}
+
+function genLstNew(v) {
+  return [
+    { rows: [{ label: 'content', nodes: [{ v, cls: '' }] }], code: `ft_lstnew(${v})`, why: `Recebe o content que o novo nó vai guardar.` },
+    { rows: [{ label: 'novo nó', nodes: [{ v, cls: 'new' }] }], code: `node->content = ${v}; node->next = NULL;`, why: `Nó alocado, pronto pra ser inserido em alguma lista.` },
+  ];
+}
+
+function genLstAddFront(list, v) {
+  return [
+    { rows: [{ label: 'lista', nodes: lnodes(list) }], code: `lst = ${list.join(' → ')} → NULL`, why: `Estado inicial da lista.` },
+    { rows: [{ label: 'novo nó', nodes: [{ v, cls: 'new' }] }], code: `new = ft_lstnew(${v});`, why: `Cria o nó que vai ser inserido no início.` },
+    { rows: [{ label: 'resultado', nodes: [{ v, cls: 'new' }, ...lnodes(list)] }], code: `new->next = *lst; *lst = new;`, why: `O novo nó aponta pro antigo primeiro, e vira o novo início da lista.` },
+  ];
+}
+
+function genLstAddBack(list, v) {
+  const steps = [{ rows: [{ label: 'lista', nodes: lnodes(list) }], code: `lst = ${list.join(' → ')} → NULL`, why: `Estado inicial.` }];
+  steps.push({ rows: [{ label: 'lista', nodes: lnodes(list, list.length - 1) }] , code: `last = ft_lstlast(*lst);`, why: `Percorre até achar o nó cujo next é NULL.` });
+  steps.push({ rows: [{ label: 'resultado', nodes: [...lnodes(list), { v, cls: 'new' }] }], code: `last->next = ft_lstnew(${v});`, why: `Anexa o novo nó depois do último.` });
+  return steps;
+}
+
+function genLstSize(list) {
+  const steps = [];
+  for (let i = 0; i < list.length; i++) {
+    steps.push({ rows: [{ label: 'lista', nodes: lnodes(list, i) }], code: `count = ${i + 1};`, why: `Conta o nó ${i + 1} e avança pro next.` });
+  }
+  steps.push({ rows: [{ label: 'lista', nodes: lnodes(list) }], code: `return (${list.length});`, why: `next == NULL — para de contar. Retorna ${list.length}.` });
+  return steps;
+}
+
+function genLstLast(list) {
+  const steps = [];
+  for (let i = 0; i < list.length - 1; i++) steps.push({ rows: [{ label: 'lista', nodes: lnodes(list, i) }], code: `lst = lst->next;`, why: `next != NULL — ainda não é o último.` });
+  steps.push({ rows: [{ label: 'lista', nodes: lnodes(list, list.length - 1, 'ok') }], code: `return (lst);`, why: `next == NULL — esse é o último nó.` });
+  return steps;
+}
+
+function genLstDelone(list, idx) {
+  const steps = [];
+  steps.push({ rows: [{ label: 'lista', nodes: lnodes(list, idx) }], code: `ft_lstdelone(node, del)`, why: `O nó alvo, ainda intacto.` });
+  const freed = list.map((v, i) => ({ v, cls: i === idx ? 'freed' : '' }));
+  steps.push({ rows: [{ label: 'lista', nodes: freed }], code: `del(node->content); free(node);`, why: `Libera SÓ esse nó — o resto da lista continua de pé (não mexe no next dos vizinhos).` });
+  return steps;
+}
+
+function genLstClear(list) {
+  const steps = [{ rows: [{ label: 'lista', nodes: lnodes(list) }], code: `ft_lstclear(lst, del)`, why: `Estado inicial.` }];
+  for (let i = 0; i < list.length; i++) {
+    const cur = list.map((v, j) => ({ v, cls: j <= i ? 'freed' : '' }));
+    steps.push({ rows: [{ label: 'lista', nodes: cur }], code: `ft_lstdelone(node, del); node = next;`, why: `Libera o nó ${i + 1} e avança antes de continuar.` });
+  }
+  steps.push({ rows: [{ label: 'lista', nodes: [] }], code: `*lst = NULL;`, why: `Todos os nós foram liberados — o ponteiro original é zerado.` });
+  return steps;
+}
+
+function genLstIter(list, fn, label) {
+  return list.map((v, i) => ({
+    rows: [{ label: 'lista', nodes: lnodes(list, i) }],
+    code: `f(lst->content); // ${label}`, why: `Aplica f ao content do nó ${i + 1}, sem criar lista nova.`
+  }));
+}
+
+function genLstMap(list, fn, label) {
+  const steps = [];
+  const built = [];
+  for (let i = 0; i < list.length; i++) {
+    built.push({ v: fn(list[i]), cls: 'new' });
+    steps.push({
+      rows: [
+        { label: 'original', nodes: lnodes(list, i) },
+        { label: 'nova lista', nodes: built.slice() },
+      ],
+      code: `new_node = ft_lstnew(f(${list[i]})); // ${label}`,
+      why: `Aplica f ao content original e anexa o resultado na lista nova.`
+    });
+  }
+  steps.push({ rows: [{ label: 'original', nodes: lnodes(list) }, { label: 'nova lista', nodes: built }], code: `return (nova_lista);`, why: `A lista original não foi alterada.` });
+  return steps;
+}
+
+/* ================= render engines (lazy, built on first open) ================= */
+function buildBoxComic(container, steps) {
+  if (!container || container.dataset.built) return;
+  container.dataset.built = '1';
+  let idx = 0;
+  container.innerHTML = `
+    <div class="bx-stage"></div>
+    <div class="bx-code"></div>
+    <div class="bx-why"></div>
+    <div class="bx-nav">
+      <button type="button" class="bx-prev">◀ anterior</button>
+      <span class="bx-counter"></span>
+      <button type="button" class="bx-next">próximo ▶</button>
+    </div>`;
+  const stage = container.querySelector('.bx-stage');
+  const codeEl = container.querySelector('.bx-code');
+  const whyEl = container.querySelector('.bx-why');
+  const counterEl = container.querySelector('.bx-counter');
+  const prevBtn = container.querySelector('.bx-prev');
+  const nextBtn = container.querySelector('.bx-next');
+  function cellHTML(c) {
+    const cls = ['bx-cell'];
+    if (c.hi) cls.push('hi');
+    if (c.hi2) cls.push('hi2');
+    if (c.ok) cls.push('ok');
+    if (c.dim) cls.push('dim');
+    const ptr = c.ptr ? `<span class="ptr">${c.ptr}</span>` : '';
+    const ch = (c.ch === undefined || c.ch === '') ? '&nbsp;' : c.ch;
+    return `<div class="${cls.join(' ')}">${ptr}${ch}</div>`;
+  }
+  function render() {
+    const step = steps[idx];
+    stage.innerHTML = step.rows.map(r => `<div class="bx-row"><span class="bx-label">${r.label}</span><div class="bx-cells">${r.chars.map(cellHTML).join('')}</div></div>`).join('');
+    codeEl.textContent = step.code || '';
+    whyEl.textContent = step.why || '';
+    counterEl.textContent = `${idx + 1} / ${steps.length}`;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === steps.length - 1;
+  }
+  prevBtn.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
+  nextBtn.addEventListener('click', () => { if (idx < steps.length - 1) { idx++; render(); } });
+  render();
+}
+
+function buildListComic(container, steps) {
+  if (!container || container.dataset.built) return;
+  container.dataset.built = '1';
+  let idx = 0;
+  container.innerHTML = `
+    <div class="bx-stage"></div>
+    <div class="bx-code"></div>
+    <div class="bx-why"></div>
+    <div class="bx-nav">
+      <button type="button" class="bx-prev">◀ anterior</button>
+      <span class="bx-counter"></span>
+      <button type="button" class="bx-next">próximo ▶</button>
+    </div>`;
+  const stage = container.querySelector('.bx-stage');
+  const codeEl = container.querySelector('.bx-code');
+  const whyEl = container.querySelector('.bx-why');
+  const counterEl = container.querySelector('.bx-counter');
+  const prevBtn = container.querySelector('.bx-prev');
+  const nextBtn = container.querySelector('.bx-next');
+  function rowHTML(r) {
+    let inner = '';
+    if (r.nodes.length === 0) {
+      inner = `<span class="lc-null">NULL</span>`;
+    } else {
+      r.nodes.forEach(n => {
+        inner += `<div class="lc-box ${n.cls || ''}">${n.v}</div><span class="lc-arrow">→</span>`;
+      });
+      inner += `<span class="lc-null">NULL</span>`;
+    }
+    return `<div class="bx-row"><span class="bx-label">${r.label}</span><div class="lc-row">${inner}</div></div>`;
+  }
+  function render() {
+    const step = steps[idx];
+    stage.innerHTML = step.rows.map(rowHTML).join('');
+    codeEl.textContent = step.code || '';
+    whyEl.textContent = step.why || '';
+    counterEl.textContent = `${idx + 1} / ${steps.length}`;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === steps.length - 1;
+  }
+  prevBtn.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
+  nextBtn.addEventListener('click', () => { if (idx < steps.length - 1) { idx++; render(); } });
+  render();
+}
+
+/* ================= registry: container id -> {engine, gen} ================= */
+const ANIM_REGISTRY = {
+  'anim-gnl-main': { engine: 'box', gen: () => genGNLSteps("Hello\nWorld\n!", 4) },
+
+  /* ---- Part 1 · libc ---- */
+  'anim-ft_isalpha': { engine: 'box', gen: () => genClassify('ft_isalpha', 'a', c => /[a-zA-Z]/.test(c), 'a–z, A–Z') },
+  'anim-ft_isdigit': { engine: 'box', gen: () => genClassify('ft_isdigit', '9', c => /[0-9]/.test(c), '0–9') },
+  'anim-ft_isalnum': { engine: 'box', gen: () => genClassify('ft_isalnum', '_', c => /[a-zA-Z0-9]/.test(c), 'letra ou dígito') },
+  'anim-ft_isascii': { engine: 'box', gen: () => genClassify('ft_isascii', 'A', c => c.charCodeAt(0) < 128, 'código 0–127') },
+  'anim-ft_isprint': { engine: 'box', gen: () => genClassify('ft_isprint', '\n', c => c.charCodeAt(0) >= 32 && c.charCodeAt(0) < 127, 'imprimível') },
+  'anim-ft_strlen': { engine: 'box', gen: () => genScanLen('abc') },
+  'anim-ft_memset': { engine: 'box', gen: () => genFill(4, '0', 'memset') },
+  'anim-ft_bzero': { engine: 'box', gen: () => genFill(4, '0', 'bzero') },
+  'anim-ft_memcpy': { engine: 'box', gen: () => genCopy('data', 4, 'memcpy') },
+  'anim-ft_memmove': { engine: 'box', gen: () => genCopy('moved', 5, 'memmove') },
+  'anim-ft_strlcpy': { engine: 'box', gen: () => genCopyBounded('', 'hello world', 6) },
+  'anim-ft_strlcat': { engine: 'box', gen: () => genConcatBounded('foo', 'bar', 6) },
+  'anim-ft_toupper': { engine: 'box', gen: () => genTransform('ft_toupper', 'a', c => c.toUpperCase()) },
+  'anim-ft_tolower': { engine: 'box', gen: () => genTransform('ft_tolower', 'A', c => c.toLowerCase()) },
+  'anim-ft_strchr': { engine: 'box', gen: () => genSearchChar('hello', 'l', false) },
+  'anim-ft_strrchr': { engine: 'box', gen: () => genSearchChar('hello', 'l', true) },
+  'anim-ft_strncmp': { engine: 'box', gen: () => genCompareN('abc', 'abd', 3) },
+  'anim-ft_memchr': { engine: 'box', gen: () => genSearchCharN('hello', 'l', 5) },
+  'anim-ft_memcmp': { engine: 'box', gen: () => genCompareN('abcz', 'abcy', 4) },
+  'anim-ft_strnstr': { engine: 'box', gen: () => genSearchSubstrN('hello world', 'wor', 11) },
+  'anim-ft_atoi': { engine: 'box', gen: () => genAtoi('  -42x') },
+  'anim-ft_calloc': { engine: 'box', gen: () => genFill(6, '0', 'calloc') },
+  'anim-ft_strdup': { engine: 'box', gen: () => genCopy('hello', 5, 'strdup') },
+
+  /* ---- Part 2 · adicionais ---- */
+  'anim-ft_substr': { engine: 'box', gen: () => genSubstr('hello', 1, 3) },
+  'anim-ft_strjoin': { engine: 'box', gen: () => genJoin('foo', 'bar') },
+  'anim-ft_strtrim': { engine: 'box', gen: () => genTrim('  hi  ', ' ') },
+  'anim-ft_split': { engine: 'box', gen: () => genSplit('a,b,,c', ',') },
+  'anim-ft_itoa': { engine: 'box', gen: () => genItoa(-205) },
+  'anim-ft_strmapi': { engine: 'box', gen: () => genMapi('abc', c => c.toUpperCase(), 'maiúsculas') },
+  'anim-ft_striteri': { engine: 'box', gen: () => genIteri('abc', c => c.toUpperCase(), 'maiúsculas, in-place') },
+  'anim-ft_putchar_fd': { engine: 'box', gen: () => genWriteOut('A', false) },
+  'anim-ft_putstr_fd': { engine: 'box', gen: () => genWriteOut('hello', false) },
+  'anim-ft_putendl_fd': { engine: 'box', gen: () => genWriteOut('hello', true) },
+  'anim-ft_putnbr_fd': { engine: 'box', gen: () => genWriteOut('-42', false) },
+
+  /* ---- Part 3 · linked list ---- */
+  'anim-ft_lstnew': { engine: 'list', gen: () => genLstNew(5) },
+  'anim-ft_lstadd_front': { engine: 'list', gen: () => genLstAddFront([3, 7], 9) },
+  'anim-ft_lstsize': { engine: 'list', gen: () => genLstSize([3, 7, 1]) },
+  'anim-ft_lstlast': { engine: 'list', gen: () => genLstLast([3, 7, 1]) },
+  'anim-ft_lstadd_back': { engine: 'list', gen: () => genLstAddBack([3, 7], 9) },
+  'anim-ft_lstdelone': { engine: 'list', gen: () => genLstDelone([3, 7, 1], 1) },
+  'anim-ft_lstclear': { engine: 'list', gen: () => genLstClear([3, 7, 1]) },
+  'anim-ft_lstiter': { engine: 'list', gen: () => genLstIter([3, 7, 1], v => v * 2, '×2') },
+  'anim-ft_lstmap': { engine: 'list', gen: () => genLstMap([3, 7, 1], v => v * 2, '×2') },
+};
+
+/* ================= wiring: build lazily when a <details> is opened ================= */
+document.querySelectorAll('details.bx-details').forEach(det => {
+  det.addEventListener('toggle', function () {
+    if (!this.open) return;
+    const container = this.querySelector('.bx-wrap');
+    if (!container) return;
+    const entry = ANIM_REGISTRY[container.id];
+    if (!entry) return;
+    if (entry.engine === 'list') buildListComic(container, entry.gen());
+    else buildBoxComic(container, entry.gen());
+  });
+});
+
+/* ================= project switching ================= */
+const PROJECT_META = {
+  pushswap: {title:'push_swap', block:'proj-pushswap', tabs:'tabsgroup-pushswap'},
+  gnl:      {title:'get_next_line', block:'proj-gnl', tabs:'tabsgroup-gnl'},
+  libft:    {title:'libft', block:'proj-libft', tabs:'tabsgroup-libft'},
+};
+function setProject(key){
+  const meta = PROJECT_META[key];
+  if(!meta) return;
+  Object.values(PROJECT_META).forEach(m=>{
+    document.getElementById(m.block).classList.toggle('active', m.block===meta.block);
+    document.getElementById(m.tabs).classList.toggle('active', m.tabs===meta.tabs);
+  });
+  document.getElementById('brand-title').textContent = meta.title;
+  window.scrollTo({top:0, behavior:'instant'});
+}
+document.getElementById('project-select').addEventListener('change', e=>setProject(e.target.value));
+setProject('pushswap');
 </script>
 </body>
 </html>
