@@ -1,4 +1,4 @@
-# push_swap — Guia Visual
+# Project Guide — Guia Visual
 
 Guia interativo do projeto **push_swap** (42 School), com fluxogramas, quadrinhos animados de ponteiros e diagramas de decisão para cada arquivo do código-fonte.
 
